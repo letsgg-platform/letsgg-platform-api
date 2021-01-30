@@ -20,6 +20,10 @@ jobs:
         run: mvn -B clean package
       - name: Maven Verify
         run: mvn -B clean verify
+        env:
+          mongodb_test_uri:  ${{mongodb_test_uri}}
+          test_email: ${{test_email}}
+          test_email_pwd: ${{test_email_pwd}}
 #   sonar:
 #     name: Code-Quality Check
 #     runs-on: ubuntu-latest
