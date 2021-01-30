@@ -2,15 +2,15 @@
 Backend API for let's GG Platform
 
 ## Requirements
-- **Maven >= 3.6.3**
 - **JDK >= 11**
-- **MongoDB >= 4.4.3**
+- **Maven >= 3.6.3**
+- **MongoDB >= 4.4**
 
 ## Build
 
 
 ```bash
-mvn clean package
+mvn clean package -DskipTests
 ```
 
 ## Test
