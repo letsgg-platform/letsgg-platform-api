@@ -19,9 +19,9 @@ jobs:
       - name: Maven Package
         run: mvn -B clean package
         env:
-          mongodb_test_uri:  ${{ mongodb_test_uri }}
-          test_email: ${{ test_email }}
-          test_email_pwd: ${{ test_email_pwd }}
+          mongodb_test_uri:  ${{ secrets.mongodb_test_uri }}
+          test_email: ${{ secrets.test_email }}
+          test_email_pwd: ${{ secrets.test_email_pwd }}
       - name: Maven Verify
         run: mvn -B clean verify
        
