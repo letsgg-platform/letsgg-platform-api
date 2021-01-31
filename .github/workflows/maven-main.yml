@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Set up JDK 11
+      - name: Set up JDK 8
         uses: actions/setup-java@v1
         with:
-          java-version: 1.11
+          java-version: 1.8
       - name: Maven Package
         run: mvn -B clean package -DskipTests
       - name: Maven Verify
@@ -30,10 +30,10 @@ jobs:
 #     runs-on: ubuntu-latest
 #     steps:
 #       - uses: actions/checkout@v1
-#       - name: Set up JDK 11
+#       - name: Set up JDK 8
 #         uses: actions/setup-java@v1
 #         with:
-#           java-version: 1.11
+#           java-version: 1.8
 #       - name: SonarCloud Scan
 #         run: mvn -B clean verify -Psonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 #         env:
