@@ -22,11 +22,11 @@ class OpenApiConfig {
         .apiInfo(openApiInfo())
 
     private fun openApiInfo() = ApiInfoBuilder()
-        .title("let'sGG User-Mail Service API")
+        .title("let'sGG Platform API")
         .description("")
         .contact(Contact("Roman Tupis", "https://t.me/romm1", "romantupss@gmail.com"))
         .license("")
         .licenseUrl("")
-        .version("0.1.0")
+        .version("0.0.1")
         .build()
 }
