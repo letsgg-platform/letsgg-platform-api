@@ -1,4 +1,4 @@
-name: Java CI with Maven For main branch
+name: main-build
 
 on:
   push:
