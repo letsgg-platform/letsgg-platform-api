@@ -1,6 +1,5 @@
-# letsgg-platform-api
+# letsgg-platform-api ![Build and Test](https://github.com/letsgg-platform/letsgg-platform-api/workflows/Build%20and%20Test/badge.svg?branch=main)
 Backend API for let'sGG Platform 
-### ![build](https://github.com/letsgg-platform/letsgg-platform-api/workflows/build/badge.svg?branch=main) ![service tests](https://github.com/letsgg-platform/letsgg-platform-api/workflows/service%20tests/badge.svg?branch=main)
 
 ## Requirements
 - **JDK >= 1.8**
