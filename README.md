@@ -1,5 +1,6 @@
 # letsgg-platform-api
-Backend API for let'sGG Platform ![main-build](https://github.com/letsgg-platform/letsgg-platform-api/workflows/main-build/badge.svg)
+Backend API for let'sGG Platform 
+### ![main-build](https://github.com/letsgg-platform/letsgg-platform-api/workflows/main-build/badge.svg)
 
 ## Requirements
 - **JDK >= 1.8**
@@ -7,7 +8,6 @@ Backend API for let'sGG Platform ![main-build](https://github.com/letsgg-platfor
 - **MongoDB >= 4.4**
 
 ## Build
-
 
 ```bash
 mvn clean package -DskipTests
@@ -22,4 +22,3 @@ mvn spring-boot:run
 ```bash
 mvn clean verify
 ```
- 
