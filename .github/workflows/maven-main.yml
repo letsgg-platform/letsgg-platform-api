@@ -1,4 +1,4 @@
-name: build
+name: Build and Test
 
 on:
   push:
@@ -22,6 +22,12 @@ jobs:
           java-version: 1.8
       - name: Maven Package
         run: mvn -B clean package -DskipTests
+      - name: Maven Verify
+        run: mvn -B clean verify
+        env:
+          mongodb_test_uri:  ${{ secrets.MONGODB_TEST_URI }}
+          test_email: ${{ secrets.TEST_EMAIL }}
+          test_email_pwd: ${{ secrets.TEST_EMAIL_PWD }}
        
 #   sonar:
 #     name: Code-Quality Check
