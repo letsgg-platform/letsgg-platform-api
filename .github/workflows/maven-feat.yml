@@ -1,4 +1,4 @@
-name: Java CI with Maven For feature branches
+name: build
 
 on:
   push:
