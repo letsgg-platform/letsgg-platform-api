@@ -40,7 +40,9 @@ jobs:
       - name: Maven Verify
         run: mvn -B clean verify
         env:
-          mongodb_test_uri:  ${{ secrets.MONGODB_TEST_URI }}
+          spring_datasource_url:  ${{ secrets.SPRING_DATASOURCE_URL }}
+          spring_datasource_username: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          spring_datasource_password: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
           test_email: ${{ secrets.TEST_EMAIL }}
           test_email_pwd: ${{ secrets.TEST_EMAIL_PWD }}
        
