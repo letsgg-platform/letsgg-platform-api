@@ -21,3 +21,6 @@ mvn spring-boot:run
 ```bash
 mvn clean verify
 ```
+## Contacts
+- email: romantupss@gmail.com
+- telegram: [@romm1](https://t.me/romm1)
