@@ -1,10 +1,10 @@
 package net.letsgg.platform.repository
 
 import net.letsgg.platform.entity.EmailEntry
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface EmailEntryRepo : MongoRepository<EmailEntry, String> {
+interface EmailEntryRepo : JpaRepository<EmailEntry, UUID> {
 
     fun findByUserEmail(userEmail: String): Optional<EmailEntry>
 

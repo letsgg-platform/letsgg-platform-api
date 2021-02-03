@@ -4,8 +4,11 @@ import net.letsgg.platform.entity.EmailEntry
 import net.letsgg.platform.exception.EmailAlreadyInUseException
 import net.letsgg.platform.repository.EmailEntryRepo
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
+@Transactional
 class NewsletterSignUpService(
     private val emailEntryRepo: EmailEntryRepo
 ) {
@@ -18,7 +21,7 @@ class NewsletterSignUpService(
         return emailEntryRepo.save(emailEntry)
     }
 
-    fun unsubscribeFromNewsFeed(id: String) {
+    fun unsubscribeFromNewsFeed(id: UUID) {
         emailEntryRepo.deleteById(id)
     }
 }
