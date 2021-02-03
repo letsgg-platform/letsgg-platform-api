@@ -1,6 +1,7 @@
 package net.letsgg.platform.webapi.controller
 
 import net.letsgg.platform.service.NewsletterSignUpServiceFacade
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -14,7 +15,7 @@ class UserEmailController(
     @PostMapping("/newsletter-signup/{userEmail}")
     fun subscribeForNewsletter(@PathVariable userEmail: String): ResponseEntity<Unit> {
         newsletterSignUpServiceFacade.signUpForNewsletterAndSendWelcomeMail(userEmail)
-        return ResponseEntity.ok().build()
+        return ResponseEntity(HttpStatus.OK)
     }
 
     @GetMapping("/newsletter-unsubscribe-{id}")
