@@ -8,17 +8,17 @@ import java.util.*
 @Transactional
 class NewsletterSignUpServiceFacade(
     private val emailSenderService: EmailSenderService,
-    private val newsletterSignUpService: NewsletterSignUpService
+    private val newsletterSubscribeService: NewsletterSubscribeService
 ) {
 
     fun signUpForNewsletterAndSendWelcomeMail(targetEmail: String) {
         with(targetEmail) {
-            val emailEntry = newsletterSignUpService.signUpForNewsFeed(this)
+            val emailEntry = newsletterSubscribeService.signUpForNewsFeed(this)
             emailSenderService.sendPostSubscribeForNewsletterEmails("let'sGG is coming. Are you ready?", emailEntry)
         }
     }
 
     fun unsubscribeFromNewsletterAndSendByeMail(emailEntryId: UUID) {
-        newsletterSignUpService.unsubscribeFromNewsFeed(emailEntryId)
+        newsletterSubscribeService.unsubscribeFromNewsFeed(emailEntryId)
     }
 }

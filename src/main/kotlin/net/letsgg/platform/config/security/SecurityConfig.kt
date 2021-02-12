@@ -55,6 +55,7 @@ class SecurityConfig(
             .hasAuthority(READ.getPermission())
             .antMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
             .antMatchers("/api/population-resource").permitAll()
+            .antMatchers("/api/email-service/**").permitAll()
             .anyRequest()
             .authenticated()
     }
