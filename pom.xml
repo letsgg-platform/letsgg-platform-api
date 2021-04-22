@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <kotlin.version>1.4.30</kotlin.version>
+        <kotlin.version>1.4.31</kotlin.version>
         <swagger.version>2.9.2</swagger.version>
         <jwt.version>3.12.0</jwt.version>
         <commons-validator.version>1.7</commons-validator.version>
@@ -62,6 +62,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -186,5 +190,18 @@
             </resource>
         </resources>
     </build>
+
+    <developers>
+        <developer>
+            <id>romm1</id>
+            <name>Roman Tupis</name>
+            <email>romantupss@gmail.com</email>
+            <url>t.me/romm1of</url>
+            <roles>
+                <role>Lead Developer</role>
+            </roles>
+            <timezone>2</timezone>
+        </developer>
+    </developers>
 
 </project>

@@ -1,13 +1,13 @@
 package net.letsgg.platform.security
 
-import net.letsgg.platform.security.LetsggUserPermission.MODIFY
-import net.letsgg.platform.security.LetsggUserPermission.READ
+import net.letsgg.platform.security.AppUserPermission.*
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import java.util.stream.Collectors
 
-enum class LetsggUserRole(private val permissions: Set<LetsggUserPermission>) {
-    ADMIN(setOf(READ, MODIFY)),
-    USER(setOf(READ));
+enum class AppUserRole(private val permissions: Set<AppUserPermission>) {
+    ADMIN(setOf(READ, MODIFY, USER_INFO)),
+    USER(setOf(READ, USER_INFO)),
+    UNFINISHED_SETUP_USER(setOf(USER_INFO));
 
     fun getGrantedAuthorities(): Set<SimpleGrantedAuthority> {
         val permissions: MutableSet<SimpleGrantedAuthority> = permissions.stream()
@@ -15,5 +15,9 @@ enum class LetsggUserRole(private val permissions: Set<LetsggUserPermission>) {
             .collect(Collectors.toSet())
         permissions.add(SimpleGrantedAuthority("ROLE_$name"))
         return permissions
+    }
+    
+    override fun toString(): String {
+        return "ROLE_${this.name}"
     }
 }
