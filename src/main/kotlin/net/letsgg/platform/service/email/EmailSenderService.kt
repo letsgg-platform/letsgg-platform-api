@@ -1,6 +1,5 @@
-package net.letsgg.platform.service
+package net.letsgg.platform.service.email
 
-import net.letsgg.platform.entity.EmailEntry
 import net.letsgg.platform.utility.LoggerDelegate
 import org.springframework.core.io.ClassPathResource
 import org.springframework.mail.SimpleMailMessage
@@ -18,15 +17,7 @@ class EmailSenderService(
 
     private val log by LoggerDelegate()
 
-    fun sendEmail(subject: String, text: String, targetEmail: String) {
-        val message = SimpleMailMessage()
-        with(message) {
-            setSubject(subject)
-            setText(text)
-            setTo(targetEmail)
-        }
-        javaMailSender.send(message)
-    }
+    fun sendEmail(simpleMailMessage: SimpleMailMessage) = javaMailSender.send(simpleMailMessage)
 
     fun sendEmailWithThymeleafTemplate(
         content: String, thymeleafContext: Context, subject: String, targetEmail: String,
@@ -43,19 +34,6 @@ class EmailSenderService(
             }
         }
         javaMailSender.send(mimeMessage)
-        log.info("Sending mail to $targetEmail")
-    }
-
-    fun sendPostSubscribeForNewsletterEmails(subject: String, emailEntry: EmailEntry) {
-        val inlineFiles = listOf(
-            Pair("let'sGG-logo", ClassPathResource("static/images/logo_tertiary.png")),
-            Pair("facebook-white", ClassPathResource("static/images/facebook-white.png")),
-            Pair("twitter-white", ClassPathResource("static/images/twitter-white.png")),
-        )
-        val thymeLeafContext = Context().apply {
-            setVariable("userEmailId", emailEntry.id)
-        }
-        val content = templateEngine.process("newsletter-prelaunch.html", thymeLeafContext)
-        sendEmailWithThymeleafTemplate(content, thymeLeafContext, subject, emailEntry.userEmail, true, inlineFiles)
+        log.info("Sending email to $targetEmail")
     }
 }

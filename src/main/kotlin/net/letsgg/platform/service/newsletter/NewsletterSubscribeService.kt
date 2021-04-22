@@ -1,4 +1,4 @@
-package net.letsgg.platform.service
+package net.letsgg.platform.service.newsletter
 
 import net.letsgg.platform.entity.EmailEntry
 import net.letsgg.platform.exception.EmailAlreadyInUseException
