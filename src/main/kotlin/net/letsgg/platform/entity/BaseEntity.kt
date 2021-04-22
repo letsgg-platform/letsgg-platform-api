@@ -13,7 +13,7 @@ import javax.persistence.MappedSuperclass
 abstract class AbstractJpaPersistable<T : Serializable> {
 
     companion object {
-        private val serialVersionUID = 1L
+        private const val serialVersionUID = 1L
     }
 
     @Id
@@ -21,10 +21,10 @@ abstract class AbstractJpaPersistable<T : Serializable> {
     var id: T? = null
 
     @CreationTimestamp
-    lateinit var creationTimestamp: Instant
+    val creationTimestamp: Instant? = null
 
     @UpdateTimestamp
-    lateinit var updateTimestamp: Instant
+    var updateTimestamp: Instant? = null
 
     override fun equals(other: Any?): Boolean {
         other ?: return false
@@ -42,6 +42,7 @@ abstract class AbstractJpaPersistable<T : Serializable> {
         return 31
     }
 
-    override fun toString() = "Entity of type ${this.javaClass.name} with id: $id"
-
+    override fun toString(): String {
+        return "${this::class.simpleName}(id=$id, creationTimestamp=$creationTimestamp, updateTimestamp=$updateTimestamp"
+    }
 }

@@ -7,8 +7,8 @@ import java.util.*
 
 @Repository
 interface LetsggUserRepository : JpaRepository<LetsggUser, UUID> {
-
     fun findByUsername(username: String): Optional<LetsggUser>
-
     fun findByEmail(email: String): Optional<LetsggUser>
+    fun existsByUsername(username: String): Boolean
+    fun existsByEmail(email: String): Boolean
 }

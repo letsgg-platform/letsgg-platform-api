@@ -1,5 +1,6 @@
 package net.letsgg.platform.config
 
+import net.letsgg.platform.security.CurrentUser
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import springfox.documentation.builders.ApiInfoBuilder
@@ -24,6 +25,7 @@ class OpenApiConfig {
         .apis(RequestHandlerSelectors.basePackage("net.letsgg.platform.webapi.controller"))
         .paths(PathSelectors.any())
         .build()
+        .ignoredParameterTypes(CurrentUser::class.java)
         .securitySchemes(listOf(apiKey()))
         .securityContexts(listOf(securityContext()))
         .apiInfo(openApiInfo())

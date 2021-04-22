@@ -9,6 +9,7 @@ class ResourceNotFoundException(message: String) : RuntimeException(message) {
 
     companion object {
         fun userIdSupplier(id: UUID): Throwable = throw ResourceNotFoundException("user with id: $id not found")
-        fun userUsernameOrEmailSupplier(usernameOrEmail: String): Throwable = throw ResourceNotFoundException("user with username or email: $usernameOrEmail not found")
+        fun userEmailSupplier(email: String): Throwable = throw ResourceNotFoundException("user with email: $email not found")
+        fun userUsernameSupplier(username: String): Throwable = throw ResourceNotFoundException("user with username $username not found")
     }
 }
