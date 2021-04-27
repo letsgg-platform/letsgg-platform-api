@@ -39,7 +39,8 @@ class AppTokenService(
             oauthTokenInfo.accessToken,
             oauthTokenInfo.refreshToken,
             oauthTokenInfo.tokenType.value,
-            oauthTokenService.getOauthTokenExpirationInMs(oauthTokenInfo.accessToken)
+            oauthTokenService.getOauthTokenExpirationInMs(oauthTokenInfo.accessToken),
+            oauthTokenService.getOauthTokenExpirationInMs(oauthTokenInfo.refreshToken)
         )
     }
 }
