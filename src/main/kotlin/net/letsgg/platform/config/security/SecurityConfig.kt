@@ -59,7 +59,8 @@ class SecurityConfig(
 
     override fun configure(http: HttpSecurity) {
         http
-            .cors().configurationSource(corsConfigurationSource()).and()
+            .cors().configurationSource(corsConfigurationSource())
+            .and()
             .csrf().disable()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -119,7 +120,12 @@ class SecurityConfig(
             AUTHORIZATION, ACCESS_CONTROL_REQUEST_METHOD, ACCESS_CONTROL_REQUEST_HEADERS,
             ORIGIN, CACHE_CONTROL, CONTENT_TYPE
         )
-//        configuration.allowCredentials = true
+        configuration.exposedHeaders = listOf(
+            ACCESS_CONTROL_ALLOW_ORIGIN, ACCESS_CONTROL_ALLOW_HEADERS,
+            AUTHORIZATION, ACCESS_CONTROL_REQUEST_METHOD, ACCESS_CONTROL_REQUEST_HEADERS,
+            ORIGIN, CACHE_CONTROL, CONTENT_TYPE
+        )
+        configuration.allowCredentials = true
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
