@@ -114,6 +114,7 @@ class SecurityConfig(
         val configuration = CorsConfiguration()
         configuration.allowedOrigins = listOf("https://web-integration.letsgg.net")
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        configuration.allowCredentials = true
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
