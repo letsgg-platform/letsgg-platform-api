@@ -33,6 +33,7 @@ class UserAuthController(
 ) {
     private val logger by LoggerDelegate()
 
+//    @CrossOrigin(allowCredentials = )
     @PostMapping("/login")
     fun loginUser(
         @RequestBody @Valid loginRequest: LoginRequest,
