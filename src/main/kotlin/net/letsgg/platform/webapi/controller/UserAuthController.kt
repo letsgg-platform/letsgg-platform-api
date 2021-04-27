@@ -35,9 +35,9 @@ class UserAuthController(
     fun loginUser(
         @RequestBody @Valid loginRequest: LoginRequest,
         response: HttpServletResponse
-    ): ResponseEntity<OauthTokenInfoModel> {
+    ): ResponseEntity<Unit> {
         val authResponseBody = userAuthService.login(loginRequest, response)
-        return ResponseEntity(authResponseBody, HttpStatus.OK)
+        return ResponseEntity(HttpStatus.OK)
     }
     
     @PostMapping("/register")
