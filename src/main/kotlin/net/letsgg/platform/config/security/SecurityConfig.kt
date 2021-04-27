@@ -119,7 +119,7 @@ class SecurityConfig(
             AUTHORIZATION, ACCESS_CONTROL_REQUEST_METHOD, ACCESS_CONTROL_REQUEST_HEADERS,
             ORIGIN, CACHE_CONTROL, CONTENT_TYPE
         )
-        configuration.allowCredentials = true
+//        configuration.allowCredentials = true
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
