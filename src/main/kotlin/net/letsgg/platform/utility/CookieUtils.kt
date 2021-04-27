@@ -23,9 +23,10 @@ object CookieUtils {
         val cookie = Cookie(name, value)
         cookie.apply {
             path = "/"
+            domain = "letsgg.net"
             isHttpOnly = true
+            secure = true
             setMaxAge(maxAge)
-            
         }
         response.addCookie(cookie)
     }
