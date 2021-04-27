@@ -37,7 +37,7 @@ class SecurityConfig(
     private val httpCookieOauth2AuthorizationRequestRepository: HttpCookieOauth2AuthorizationRequestRepository,
     private val authProperties: AuthProperties,
 ) : WebSecurityConfigurerAdapter() {
-    
+
     companion object SecurityUtils {
         private val OPEN_API_WHITELIST = arrayOf(
             "/v2/api-docs**",
@@ -52,12 +52,12 @@ class SecurityConfig(
             "/actuator/**"
         )
     }
-    
+
     override fun configure(http: HttpSecurity) {
         http
-            .cors().configurationSource { request ->
+            .cors().configurationSource {
                 val cors = CorsConfiguration()
-                cors.allowedOrigins = listOf("*")
+                cors.allowedOrigins = listOf("*", "https://web-integration.letsgg.net")
                 cors.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 cors.allowedHeaders = listOf("*")
                 cors
@@ -95,14 +95,14 @@ class SecurityConfig(
             .and()
             .successHandler(oauth2AuthenticationSuccessHandler)
             .failureHandler(oauth2AuthenticationFailureHandler)
-        
+
         http.addFilterBefore(JwtTokenVerifier(authProperties), UsernamePasswordAuthenticationFilter::class.java)
     }
-    
+
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.authenticationProvider(daoAuthenticationProvider())
     }
-    
+
     @Bean
     fun daoAuthenticationProvider(): DaoAuthenticationProvider {
         val provider = DaoAuthenticationProvider()
@@ -110,10 +110,20 @@ class SecurityConfig(
         provider.setUserDetailsService(userDetailsService)
         return provider
     }
-    
+
+//    @Bean
+//    fun corsConfigurationSource(): CorsConfigurationSource {
+//        val configuration = CorsConfiguration()
+//        configuration.allowedOrigins = listOf("https://web-integration.letsgg.net")
+//        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+//        val source = UrlBasedCorsConfigurationSource()
+//        source.registerCorsConfiguration("/**", configuration)
+//        return source
+//    }
+
     @Bean
     fun getAuthenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
-    
+
     @Bean
     fun getAuthenticationPrincipalMethodResolverBean(): AuthenticationPrincipalArgumentResolver =
         AuthenticationPrincipalArgumentResolver()
