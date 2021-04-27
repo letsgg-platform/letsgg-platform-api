@@ -33,25 +33,21 @@ class UserAuthController(
 ) {
     private val logger by LoggerDelegate()
 
-//    @CrossOrigin(allowCredentials = )
+    //    @CrossOrigin(allowCredentials = )
     @PostMapping("/login")
     fun loginUser(
         @RequestBody @Valid loginRequest: LoginRequest,
         response: HttpServletResponse
     ): ResponseEntity<Unit> {
         val authResponseBody = userAuthService.login(loginRequest, response)
-        val cookie = ResponseCookie.from("ussajwt", authResponseBody.accessToken)
-            .domain("letsgg.net")
-            .httpOnly(true)
-            .secure(true)
-            .path("/")
-            .maxAge(authResponseBody.expiresIn)
-            .build()
-        return ResponseEntity
-            .ok()
-//            .header(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, true.toString())
-            .header(HttpHeaders.SET_COOKIE, cookie.toString())
-            .build()
+//        val cookie = ResponseCookie.from("ussajwt", authResponseBody.accessToken)
+//            .domain("letsgg.net")
+//            .httpOnly(true)
+//            .secure(true)
+//            .path("/")
+//            .maxAge(authResponseBody.expiresIn)
+//            .build()
+        return ResponseEntity(HttpStatus.OK)
     }
 
     @PostMapping("/register")
