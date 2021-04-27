@@ -47,7 +47,6 @@ class AppUserAuthService(
 
     fun login(loginRequest: LoginRequest, response: HttpServletResponse): OauthTokenInfoModel {
         val authentication: Authentication = attemptAuthentication(loginRequest)
-//        val user = userService.getByEmail(loginRequest.email)
         val oauthTokenInfo = jwtTokenProviderProxy.createToken(authentication)
         with(CookieUtils) {
             addCookie(response, "usaccessjwt", oauthTokenInfo.accessToken, oauthTokenInfo.expiresIn.toInt())
@@ -59,7 +58,6 @@ class AppUserAuthService(
             )
             addCookie(response, "token_type", oauthTokenInfo.tokenType, AUTH_COOKIE_MAX_AGE)
         }
-
         return oauthTokenInfo
     }
 
