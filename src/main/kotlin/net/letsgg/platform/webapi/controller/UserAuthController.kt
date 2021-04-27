@@ -10,7 +10,9 @@ import net.letsgg.platform.webapi.dto.LoginRequest
 import net.letsgg.platform.webapi.dto.OauthTokenInfoModel
 import net.letsgg.platform.webapi.dto.SignUpRequest
 import net.letsgg.platform.webapi.dto.UserAuthResponse
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -30,16 +32,26 @@ class UserAuthController(
     private val tokenService: AppTokenService
 ) {
     private val logger by LoggerDelegate()
-    
+
     @PostMapping("/login")
     fun loginUser(
         @RequestBody @Valid loginRequest: LoginRequest,
         response: HttpServletResponse
     ): ResponseEntity<Unit> {
         val authResponseBody = userAuthService.login(loginRequest, response)
-        return ResponseEntity(HttpStatus.OK)
+        val cookie = ResponseCookie.from("ussajwt", authResponseBody.accessToken)
+            .domain("letsgg.net")
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(authResponseBody.expiresIn)
+            .build()
+        return ResponseEntity
+            .ok()
+            .header(HttpHeaders.SET_COOKIE, cookie.toString())
+            .build()
     }
-    
+
     @PostMapping("/register")
     fun signUp(
         @RequestBody @Valid signUpRequest: SignUpRequest,
@@ -48,44 +60,44 @@ class UserAuthController(
         val responseBody = userAuthService.register(signUpRequest, response)
         return ResponseEntity(responseBody, HttpStatus.CREATED)
     }
-    
+
     @PostMapping("/reset-password-request")
     fun resetPassword(@RequestParam email: String): ResponseEntity<Unit> {
         userAuthService.resetPassword(email)
         return ResponseEntity(Unit, HttpStatus.OK)
     }
-    
+
     @PostMapping("/refresh-token")
     @PreAuthorize("isAuthenticated()")
     fun refreshToken(authentication: Authentication): ResponseEntity<OauthTokenInfoModel> { //FIXME, read refresh_token, not security context.
         return ResponseEntity(userAuthService.refreshToken(authentication), HttpStatus.OK)
     }
-    
+
     @GetMapping("/reset-password-confirm")
     fun showChangePasswordPage(@RequestParam token: String) {
         tokenService.validateResetPasswordToken(token)
         //if validation ok, render and show page
     }
-    
+
     @PostMapping("/update-password")
     fun updatePassword(@RequestBody changePasswordDto: ChangePasswordDto): ResponseEntity<Unit> {
         tokenService.validateResetPasswordToken(changePasswordDto.token)
-        
+
         userAuthService.changeUserPassword(changePasswordDto.newPassword, changePasswordDto.token)
         return ResponseEntity(HttpStatus.OK)
     }
-    
+
     data class ChangePasswordDto(
         val token: String, val newPassword: String,
     )
-    
+
     @RestController
     @RequestMapping("api/oauth2")
     internal class UserOauth2Controller(
         private val tokenService: AppTokenService,
     ) {
-        
-        
+
+
         @PostMapping("/token")
         fun getAccessToken(
             @RequestParam("code") authorizationCode: String,
