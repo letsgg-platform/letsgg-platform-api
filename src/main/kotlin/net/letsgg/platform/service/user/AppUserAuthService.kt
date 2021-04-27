@@ -49,16 +49,16 @@ class AppUserAuthService(
         val authentication: Authentication = attemptAuthentication(loginRequest)
 //        val user = userService.getByEmail(loginRequest.email)
         val oauthTokenInfo = jwtTokenProviderProxy.createToken(authentication)
-        with(CookieUtils) {
-            addCookie(response, "useraccessjwt", oauthTokenInfo.accessToken, oauthTokenInfo.expiresIn.toInt())
-            addCookie(
-                response,
-                "userrefreshjwt",
-                oauthTokenInfo.refreshToken,
-                oauthTokenInfo.refreshTokenExpiresIn.toInt()
-            )
-            addCookie(response, "tokentype", oauthTokenInfo.tokenType, AUTH_COOKIE_MAX_AGE)
-        }
+//        with(CookieUtils) {
+//            addCookie(response, "useraccessjwt", oauthTokenInfo.accessToken, oauthTokenInfo.expiresIn.toInt())
+//            addCookie(
+//                response,
+//                "userrefreshjwt",
+//                oauthTokenInfo.refreshToken,
+//                oauthTokenInfo.refreshTokenExpiresIn.toInt()
+//            )
+//            addCookie(response, "tokentype", oauthTokenInfo.tokenType, AUTH_COOKIE_MAX_AGE)
+//        }
 
         return oauthTokenInfo
     }
