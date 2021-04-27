@@ -25,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver
 import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @EnableWebSecurity
@@ -57,18 +59,7 @@ class SecurityConfig(
 
     override fun configure(http: HttpSecurity) {
         http
-            .cors().configurationSource {
-                val cors = CorsConfiguration()
-                cors.allowedOrigins = listOf("https://web-integration.letsgg.net")
-                cors.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                cors.allowedHeaders = listOf(
-                    ACCESS_CONTROL_ALLOW_ORIGIN, ACCESS_CONTROL_ALLOW_HEADERS,
-                    AUTHORIZATION, ACCESS_CONTROL_REQUEST_METHOD, ACCESS_CONTROL_REQUEST_HEADERS,
-                    ORIGIN, CACHE_CONTROL, CONTENT_TYPE
-                )
-                cors.allowCredentials = true
-                cors
-            }.and()
+            .cors().configurationSource(corsConfigurationSource()).and()
             .csrf().disable()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -118,15 +109,15 @@ class SecurityConfig(
         return provider
     }
 
-//    @Bean
-//    fun corsConfigurationSource(): CorsConfigurationSource {
-//        val configuration = CorsConfiguration()
-//        configuration.allowedOrigins = listOf("https://web-integration.letsgg.net")
-//        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
-//        val source = UrlBasedCorsConfigurationSource()
-//        source.registerCorsConfiguration("/**", configuration)
-//        return source
-//    }
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf("https://web-integration.letsgg.net")
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
+    }
 
     @Bean
     fun getAuthenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
