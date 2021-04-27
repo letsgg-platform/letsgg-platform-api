@@ -35,7 +35,6 @@ class AppUserAuthService(
     private val authenticationManager: AuthenticationManager,
     private val userService: AppUserService,
     private val userMapper: LetsggUserMapper,
-//    private val jwtTokenProvider: JwtTokenProvider,
     private val jwtTokenProviderProxy: JwtTokenProviderProxy,
     private val passwordResetTokenRepository: PasswordResetTokenRepository,
     private val passwordEncoder: PasswordEncoder,
@@ -43,18 +42,27 @@ class AppUserAuthService(
     private val templateEngine: TemplateEngine
 ) {
     private val AUTH_COOKIE_MAX_AGE = 999
-    
+
     private val logger by LoggerDelegate()
-    
+
     fun login(loginRequest: LoginRequest, response: HttpServletResponse): OauthTokenInfoModel {
         val authentication: Authentication = attemptAuthentication(loginRequest)
-        val user = userService.getByEmail(loginRequest.email)
-//        val signedJwtToken = jwtTokenProvider.createToken(auth)
+//        val user = userService.getByEmail(loginRequest.email)
         val oauthTokenInfo = jwtTokenProviderProxy.createToken(authentication)
-//        CookieUtils.addCookie(response, "ussajwt", signedJwtToken, AUTH_COOKIE_MAX_AGE)
+        with(CookieUtils) {
+            addCookie(response, "useraccessjwt", oauthTokenInfo.accessToken, oauthTokenInfo.expiresIn.toInt())
+            addCookie(
+                response,
+                "userrefreshjwt",
+                oauthTokenInfo.refreshToken,
+                oauthTokenInfo.refreshTokenExpiresIn.toInt()
+            )
+            addCookie(response, "tokentype", oauthTokenInfo.tokenType, AUTH_COOKIE_MAX_AGE)
+        }
+
         return oauthTokenInfo
     }
-    
+
     fun register(signUpRequest: SignUpRequest, response: HttpServletResponse): OauthTokenInfoModel {
         if (userService.existsByEmail(signUpRequest.email)) {
             throw EmailAlreadyInUseException.emailAlreadyInUseSupplier(signUpRequest.email)
@@ -68,9 +76,9 @@ class AppUserAuthService(
 //        CookieUtils.addCookie(response, "ussajwt", signedJwtToken, AUTH_COOKIE_MAX_AGE)
 //        return userMapper.toAuthResponse(user, signedJwtToken)
         return oauthTokenInfo
-        
+
     }
-    
+
     @Throws(InvalidLoginCredentialsException::class)
     private fun attemptAuthentication(loginRequest: LoginRequest): Authentication {
         try {
@@ -83,18 +91,18 @@ class AppUserAuthService(
             throw InvalidLoginCredentialsException("The sign-in email or password is not correct", ex)
         }
     }
-    
+
     fun refreshToken(authentication: Authentication): OauthTokenInfoModel {
         return jwtTokenProviderProxy.createToken(authentication)
     }
-    
+
     fun resetPassword(email: String) {
         val user = userService.getByEmail(email)
         val resetPasswordToken = generateResetPasswordToken()
         createPasswordResetTokenForUser(resetPasswordToken, user)
         sendResetPasswordEmail(user, resetPasswordToken)
     }
-    
+
     private fun sendResetPasswordEmail(user: LetsggUser, resetPasswordToken: String) {
         val thymeLeafContext = Context().apply {
             setVariable("username", user.username)
@@ -106,17 +114,17 @@ class AppUserAuthService(
             user.email, true, listOf()
         )
     }
-    
+
     fun createPasswordResetTokenForUser(resetToken: String, user: LetsggUser) {
         logger.info("creating password reset token for user ${user.id}")
         val resetPasswordToken = PasswordResetToken(resetToken, user)
         passwordResetTokenRepository.saveAndFlush(resetPasswordToken).token
     }
-    
+
     private fun generateResetPasswordToken(): String {
         return UUID.randomUUID().toString().replace("-", "")
     }
-    
+
     fun changeUserPassword(newPassword: String, resetToken: String) {
         val user = userService.getByResetToken(resetToken)
         val encodedNewPassword = passwordEncoder.encode(newPassword)

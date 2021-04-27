@@ -5,4 +5,5 @@ data class OauthTokenInfoModel(
     val refreshToken: String,
     val tokenType: String,
     val expiresIn: Long,
+    val refreshTokenExpiresIn: Long
 )

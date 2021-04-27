@@ -29,7 +29,8 @@ class JwtTokenProviderProxy(
                 createAccessToken(authentication),
                 createRefreshToken(authentication),
                 TokenType.BEARER.value,
-                getAccessTokenExpiration()
+                getAccessTokenExpiration(),
+                getRefreshTokenExpiration()
             )
         }
     }
