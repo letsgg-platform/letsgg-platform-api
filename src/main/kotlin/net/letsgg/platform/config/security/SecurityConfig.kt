@@ -10,6 +10,7 @@ import net.letsgg.platform.security.oauth2.AppOauth2UserService
 import net.letsgg.platform.security.oauth2.HttpCookieOauth2AuthorizationRequestRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -59,7 +60,7 @@ class SecurityConfig(
                 val cors = CorsConfiguration()
                 cors.allowedOrigins = listOf("*", "https://web-integration.letsgg.net")
                 cors.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                cors.allowedHeaders = listOf("*")
+                cors.allowedHeaders = listOf(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
                 cors
             }.and()
             .csrf().disable()

@@ -48,6 +48,7 @@ class UserAuthController(
             .build()
         return ResponseEntity
             .ok()
+            .header(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, true.toString())
             .header(HttpHeaders.SET_COOKIE, cookie.toString())
             .build()
     }
