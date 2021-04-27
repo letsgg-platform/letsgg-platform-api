@@ -64,6 +64,7 @@ class SecurityConfig(
                     HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
                     HttpHeaders.CONTENT_TYPE
                 )
+                cors.allowCredentials = true
                 cors
             }.and()
             .csrf().disable()
