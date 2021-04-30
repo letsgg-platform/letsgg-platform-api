@@ -13,7 +13,7 @@ class JwtTokenProviderProxy(
     private val userService: AppUserService
 ) {
 
-    fun createOauthTokenInfo(authentication: Authentication): OauthTokenInfo {
+    fun createAuthorizationOauthTokenInfo(authentication: Authentication): OauthTokenInfo {
         val user = userService.getByEmail(authentication.name)
         with(jwtTokenProvider) {
             val accessToken = createAccessToken(authentication)
@@ -33,5 +33,9 @@ class JwtTokenProviderProxy(
                 getRefreshTokenExpiration()
             )
         }
+    }
+
+    fun isTokenExpired(token: String): Boolean {
+        return jwtTokenProvider.getTokenExpirationInMs(token) <= 0
     }
 }

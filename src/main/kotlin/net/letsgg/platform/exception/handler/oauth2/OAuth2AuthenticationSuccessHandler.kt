@@ -2,7 +2,6 @@ package net.letsgg.platform.exception.handler.oauth2
 
 import net.letsgg.platform.config.AuthProperties
 import net.letsgg.platform.exception.OAuth2UnauthorizedRedirectUriException
-import net.letsgg.platform.security.jwt.JwtTokenProvider
 import net.letsgg.platform.security.jwt.JwtTokenProviderProxy
 import net.letsgg.platform.security.oauth2.HttpCookieOauth2AuthorizationRequestRepository
 import net.letsgg.platform.security.oauth2.HttpCookieOauth2AuthorizationRequestRepository.Companion.REDIRECT_URI_PARAM_COOKIE_NAME
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional
 import javax.servlet.ServletException
 
 import java.io.IOException
-import java.lang.RuntimeException
 import java.net.URI
 
 
@@ -67,7 +65,7 @@ class OAuth2AuthenticationSuccessHandler(
             throw OAuth2UnauthorizedRedirectUriException("Can't proceed with the authentication - Unauthorized Redirect URI")
         }
         val targetUrl: String = redirectUri ?: defaultTargetUrl
-        val oauthTokenInfo = tokenService.saveOauthToken(jwtTokenProviderProxy.createOauthTokenInfo(authentication))
+        val oauthTokenInfo = tokenService.saveOauthToken(jwtTokenProviderProxy.createAuthorizationOauthTokenInfo(authentication))
         return UriComponentsBuilder.fromUriString(targetUrl)
             .queryParam("code", oauthTokenInfo.authorizationCode)
             .build().toUriString()

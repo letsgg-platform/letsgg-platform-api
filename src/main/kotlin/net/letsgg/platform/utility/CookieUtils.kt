@@ -1,13 +1,21 @@
 package net.letsgg.platform.utility
 
+import net.letsgg.platform.webapi.dto.OauthTokenInfoModel
+import org.springframework.http.HttpHeaders
+import org.springframework.http.ResponseCookie
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.SerializationUtils
+import java.util.*
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import org.springframework.util.SerializationUtils
-import java.util.*
 
 
 object CookieUtils {
+
+    private const val DEFAULT_COOKIE_DOMAIN = "letsgg.net"
+    private const val DEFAULT_COOKIE_PATH = "/"
+    private const val DEFAULT_COOKIE_MAX_AGE = 999L
 
     fun getCookie(req: HttpServletRequest, name: String): Cookie? {
         val cookies: Array<Cookie>? = req.cookies
@@ -22,13 +30,30 @@ object CookieUtils {
     fun addCookie(response: HttpServletResponse, name: String, value: String, maxAge: Int) {
         val cookie = Cookie(name, value)
         cookie.apply {
-            path = "/"
-            domain = "letsgg.net"
+            path = DEFAULT_COOKIE_PATH
+            domain = DEFAULT_COOKIE_DOMAIN
             isHttpOnly = true
             secure = true
             setMaxAge(maxAge)
         }
         response.addCookie(cookie)
+    }
+
+    fun newCookie(
+        name: String,
+        value: String,
+        maxAge: Long = DEFAULT_COOKIE_MAX_AGE,
+        path: String = DEFAULT_COOKIE_PATH,
+        isHttpOnly: Boolean = true,
+        isSecure: Boolean = true
+    ): ResponseCookie {
+        return ResponseCookie.from(name, value)
+            .domain(DEFAULT_COOKIE_DOMAIN)
+            .path(path)
+            .maxAge(maxAge)
+            .httpOnly(isHttpOnly)
+            .secure(isSecure)
+            .build()
     }
 
     fun deleteCookie(req: HttpServletRequest, response: HttpServletResponse, name: String) {
@@ -56,5 +81,23 @@ object CookieUtils {
                 Base64.getUrlDecoder().decode(cookie.value)
             )
         )
+    }
+
+    fun getAuthCookieHeaders(oauthTokenInfo: OauthTokenInfoModel): HttpHeaders {
+        val accessTokenCookie =
+            newCookie("usaccessjwt", oauthTokenInfo.accessToken, oauthTokenInfo.expiresInMs / 1000)
+        val refreshTokenCookie = newCookie(
+            "usrefreshjwt",
+            oauthTokenInfo.refreshToken,
+            oauthTokenInfo.refreshTokenExpiresInMs / 1000
+        )
+        val tokenTypeCookie =
+            newCookie("token_type", oauthTokenInfo.tokenType, oauthTokenInfo.refreshTokenExpiresInMs / 1000)
+
+        val cookies =
+            listOf(accessTokenCookie.toString(), refreshTokenCookie.toString(), tokenTypeCookie.toString())
+        val multiValueMap = LinkedMultiValueMap<String, String>()
+        multiValueMap[HttpHeaders.SET_COOKIE] = cookies
+        return HttpHeaders(multiValueMap)
     }
 }

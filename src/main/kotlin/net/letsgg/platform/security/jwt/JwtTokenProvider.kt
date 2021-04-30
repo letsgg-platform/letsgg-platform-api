@@ -2,6 +2,7 @@ package net.letsgg.platform.security.jwt
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.exceptions.JWTVerificationException
 import net.letsgg.platform.config.AuthProperties
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
@@ -42,11 +43,15 @@ class JwtTokenProvider(
     }
 
     internal fun getTokenExpirationInMs(token: String): Long {
-        val expiresAt = JWT
-            .require(Algorithm.HMAC512(authProperties.tokenSecretKey))
-            .build()
-            .verify(token).expiresAt
-        return Instant.now().until(expiresAt.toInstant(), ChronoUnit.MILLIS)
+        return try {
+            val expiresAt = JWT
+                .require(Algorithm.HMAC512(authProperties.tokenSecretKey))
+                .build()
+                .verify(token).expiresAt
+            Instant.now().until(expiresAt.toInstant(), ChronoUnit.MILLIS)
+        } catch (e: JWTVerificationException) {
+            0
+        }
     }
 
     private fun getExpiredDate(tokenExpireInMs: Long): java.util.Date? {
