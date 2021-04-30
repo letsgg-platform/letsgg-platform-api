@@ -1,9 +1,14 @@
 package net.letsgg.platform.webapi.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class OauthTokenInfoModel(
     val accessToken: String,
     val refreshToken: String,
     val tokenType: String,
-    val expiresIn: Long,
-    val refreshTokenExpiresIn: Long
+    @JsonProperty("expiresIn")
+    val expiresInMs: Long,
+    @JsonIgnore
+    val refreshTokenExpiresInMs: Long
 )

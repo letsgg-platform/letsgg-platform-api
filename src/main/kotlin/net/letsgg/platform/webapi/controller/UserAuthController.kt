@@ -1,25 +1,19 @@
 package net.letsgg.platform.webapi.controller
 
 import net.letsgg.platform.mapper.LetsggUserMapper
-import net.letsgg.platform.security.Preauthorized
-import net.letsgg.platform.security.oauth2.OauthTokenInfo
 import net.letsgg.platform.service.AppTokenService
 import net.letsgg.platform.service.user.AppUserAuthService
+import net.letsgg.platform.utility.CookieUtils.getAuthCookieHeaders
 import net.letsgg.platform.utility.LoggerDelegate
 import net.letsgg.platform.webapi.dto.LoginRequest
 import net.letsgg.platform.webapi.dto.OauthTokenInfoModel
 import net.letsgg.platform.webapi.dto.SignUpRequest
-import net.letsgg.platform.webapi.dto.UserAuthResponse
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 
@@ -36,19 +30,19 @@ class UserAuthController(
     @PostMapping("/login")
     fun loginUser(
         @RequestBody @Valid loginRequest: LoginRequest,
-        response: HttpServletResponse
     ): ResponseEntity<OauthTokenInfoModel> {
-        val oauthTokenInfoModel = userAuthService.login(loginRequest, response)
-        return ResponseEntity(oauthTokenInfoModel, HttpStatus.OK)
+        logger.info("logging in ${loginRequest.email}")
+        val oauthTokenInfo = userAuthService.login(loginRequest)
+
+        return ResponseEntity(oauthTokenInfo, getAuthCookieHeaders(oauthTokenInfo), HttpStatus.OK)
     }
 
     @PostMapping("/register")
     fun signUp(
         @RequestBody @Valid signUpRequest: SignUpRequest,
-        response: HttpServletResponse
     ): ResponseEntity<OauthTokenInfoModel> {
-        val responseBody = userAuthService.register(signUpRequest, response)
-        return ResponseEntity(responseBody, HttpStatus.CREATED)
+        val oauthTokenInfo = userAuthService.register(signUpRequest)
+        return ResponseEntity(oauthTokenInfo, getAuthCookieHeaders(oauthTokenInfo), HttpStatus.CREATED)
     }
 
     @PostMapping("/reset-password-request")
@@ -58,7 +52,7 @@ class UserAuthController(
     }
 
     @PostMapping("/refresh-token")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     fun refreshToken(authentication: Authentication): ResponseEntity<OauthTokenInfoModel> { //FIXME, read refresh_token, not security context.
         return ResponseEntity(userAuthService.refreshToken(authentication), HttpStatus.OK)
     }
@@ -87,7 +81,6 @@ class UserAuthController(
         private val tokenService: AppTokenService,
     ) {
 
-
         @PostMapping("/token")
         fun getAccessToken(
             @RequestParam("code") authorizationCode: String,
@@ -95,7 +88,7 @@ class UserAuthController(
         ): ResponseEntity<OauthTokenInfoModel> {
             val oauthTokenInfo =
                 tokenService.getOauthTokenByAuthorizationCode(authorizationCode, request)
-            return ResponseEntity(oauthTokenInfo, HttpStatus.OK)
+            return ResponseEntity(oauthTokenInfo, getAuthCookieHeaders(oauthTokenInfo), HttpStatus.OK)
         }
     }
 }

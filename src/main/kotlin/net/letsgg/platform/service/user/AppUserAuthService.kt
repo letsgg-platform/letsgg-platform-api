@@ -6,16 +6,12 @@ import net.letsgg.platform.exception.EmailAlreadyInUseException
 import net.letsgg.platform.exception.InvalidLoginCredentialsException
 import net.letsgg.platform.mapper.LetsggUserMapper
 import net.letsgg.platform.repository.PasswordResetTokenRepository
-import net.letsgg.platform.security.jwt.JwtTokenProvider
 import net.letsgg.platform.security.jwt.JwtTokenProviderProxy
-import net.letsgg.platform.security.oauth2.OauthTokenInfo
 import net.letsgg.platform.service.email.EmailSenderService
-import net.letsgg.platform.utility.CookieUtils
 import net.letsgg.platform.utility.LoggerDelegate
 import net.letsgg.platform.webapi.dto.LoginRequest
 import net.letsgg.platform.webapi.dto.OauthTokenInfoModel
 import net.letsgg.platform.webapi.dto.SignUpRequest
-import net.letsgg.platform.webapi.dto.UserAuthResponse
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -26,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
 import java.util.*
-import javax.servlet.http.HttpServletResponse
 
 
 @Service
@@ -41,40 +36,24 @@ class AppUserAuthService(
     private val emailSenderService: EmailSenderService,
     private val templateEngine: TemplateEngine
 ) {
-    private val AUTH_COOKIE_MAX_AGE = 999
-
     private val logger by LoggerDelegate()
 
-    fun login(loginRequest: LoginRequest, response: HttpServletResponse): OauthTokenInfoModel {
+    fun login(loginRequest: LoginRequest): OauthTokenInfoModel {
         val authentication: Authentication = attemptAuthentication(loginRequest)
-        val oauthTokenInfo = jwtTokenProviderProxy.createToken(authentication)
-        with(CookieUtils) {
-            addCookie(response, "usaccessjwt", oauthTokenInfo.accessToken, oauthTokenInfo.expiresIn.toInt())
-            addCookie(
-                response,
-                "usrefreshjwt",
-                oauthTokenInfo.refreshToken,
-                oauthTokenInfo.refreshTokenExpiresIn.toInt()
-            )
-            addCookie(response, "token_type", oauthTokenInfo.tokenType, AUTH_COOKIE_MAX_AGE)
-        }
-        return oauthTokenInfo
+        return jwtTokenProviderProxy.createToken(authentication)
     }
 
-    fun register(signUpRequest: SignUpRequest, response: HttpServletResponse): OauthTokenInfoModel {
+    fun register(signUpRequest: SignUpRequest): OauthTokenInfoModel {
         if (userService.existsByEmail(signUpRequest.email)) {
+            logger.error("cannot register - this email is associated with another user")
             throw EmailAlreadyInUseException.emailAlreadyInUseSupplier(signUpRequest.email)
         }
-        val user = userService.save(userMapper.toEntity(signUpRequest))
+        userService.save(userMapper.toEntity(signUpRequest))
+
         val authentication = attemptAuthentication(
             LoginRequest(signUpRequest.email, signUpRequest.password)
         )
-        val oauthTokenInfo = jwtTokenProviderProxy.createToken(authentication)
-//        val signedJwtToken = jwtTokenProvider.createToken(auth)
-//        CookieUtils.addCookie(response, "ussajwt", signedJwtToken, AUTH_COOKIE_MAX_AGE)
-//        return userMapper.toAuthResponse(user, signedJwtToken)
-        return oauthTokenInfo
-
+        return jwtTokenProviderProxy.createToken(authentication)
     }
 
     @Throws(InvalidLoginCredentialsException::class)

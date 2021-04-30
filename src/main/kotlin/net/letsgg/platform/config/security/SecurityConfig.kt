@@ -5,6 +5,7 @@ import net.letsgg.platform.exception.handler.oauth2.OAuth2AuthenticationFailureH
 import net.letsgg.platform.exception.handler.oauth2.OAuth2AuthenticationSuccessHandler
 import net.letsgg.platform.security.AppUserDetailsService
 import net.letsgg.platform.security.RestAuthenticationEntryPoint
+import net.letsgg.platform.security.jwt.JwtTokenProviderProxy
 import net.letsgg.platform.security.jwt.JwtTokenVerifier
 import net.letsgg.platform.security.oauth2.AppOauth2UserService
 import net.letsgg.platform.security.oauth2.HttpCookieOauth2AuthorizationRequestRepository
@@ -40,6 +41,7 @@ class SecurityConfig(
     private val oauth2UserService: AppOauth2UserService,
     private val httpCookieOauth2AuthorizationRequestRepository: HttpCookieOauth2AuthorizationRequestRepository,
     private val authProperties: AuthProperties,
+    private val jwtTokenProviderProxy: JwtTokenProviderProxy
 ) : WebSecurityConfigurerAdapter() {
 
     companion object SecurityUtils {
@@ -95,7 +97,7 @@ class SecurityConfig(
             .successHandler(oauth2AuthenticationSuccessHandler)
             .failureHandler(oauth2AuthenticationFailureHandler)
 
-        http.addFilterBefore(JwtTokenVerifier(authProperties), UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterBefore(JwtTokenVerifier(authProperties, jwtTokenProviderProxy), UsernamePasswordAuthenticationFilter::class.java)
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
