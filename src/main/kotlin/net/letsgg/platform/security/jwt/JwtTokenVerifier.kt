@@ -36,9 +36,9 @@ class JwtTokenVerifier(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        if (request.getHeader("device_type") == "android") {
+        if (request.getHeader("Device-Type") == "android") {
             filterMobileRequest(request, response, filterChain)
-        } else if (request.getHeader("device_type") == "web") {
+        } else if (request.getHeader("Device-Type") == "web") {
             filterWebRequest(request, response, filterChain)
         }
         filterChain.doFilter(request, response)

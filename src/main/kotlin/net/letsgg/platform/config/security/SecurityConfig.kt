@@ -120,12 +120,12 @@ class SecurityConfig(
         configuration.allowedHeaders = listOf(
             ACCESS_CONTROL_ALLOW_ORIGIN, ACCESS_CONTROL_ALLOW_HEADERS,
             AUTHORIZATION, ACCESS_CONTROL_REQUEST_METHOD, ACCESS_CONTROL_REQUEST_HEADERS,
-            ORIGIN, CACHE_CONTROL, CONTENT_TYPE
+            ORIGIN, CACHE_CONTROL, CONTENT_TYPE, "Device-Type"
         )
         configuration.exposedHeaders = listOf(
             ACCESS_CONTROL_ALLOW_ORIGIN, ACCESS_CONTROL_ALLOW_HEADERS,
             AUTHORIZATION, ACCESS_CONTROL_REQUEST_METHOD, ACCESS_CONTROL_REQUEST_HEADERS,
-            ORIGIN, CACHE_CONTROL, CONTENT_TYPE
+            ORIGIN, CACHE_CONTROL, CONTENT_TYPE, "Device-Type"
         )
         configuration.allowCredentials = true
         val source = UrlBasedCorsConfigurationSource()
