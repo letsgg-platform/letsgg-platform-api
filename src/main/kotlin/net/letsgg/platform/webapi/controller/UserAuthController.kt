@@ -3,7 +3,7 @@ package net.letsgg.platform.webapi.controller
 import net.letsgg.platform.mapper.LetsggUserMapper
 import net.letsgg.platform.service.AppTokenService
 import net.letsgg.platform.service.user.AppUserAuthService
-import net.letsgg.platform.utility.CookieUtils.getAuthCookieHeaders
+import net.letsgg.platform.utility.CookieUtils
 import net.letsgg.platform.utility.LoggerDelegate
 import net.letsgg.platform.webapi.dto.LoginRequest
 import net.letsgg.platform.webapi.dto.OauthTokenInfoModel
@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 
@@ -30,19 +31,22 @@ class UserAuthController(
     @PostMapping("/login")
     fun loginUser(
         @RequestBody @Valid loginRequest: LoginRequest,
+        response: HttpServletResponse
     ): ResponseEntity<OauthTokenInfoModel> {
         logger.info("logging in ${loginRequest.email}")
         val oauthTokenInfo = userAuthService.login(loginRequest)
-
-        return ResponseEntity(oauthTokenInfo, getAuthCookieHeaders(oauthTokenInfo), HttpStatus.OK)
+        CookieUtils.setAuthCookies(oauthTokenInfo, response)
+        return ResponseEntity(oauthTokenInfo, HttpStatus.OK)
     }
 
     @PostMapping("/register")
     fun signUp(
         @RequestBody @Valid signUpRequest: SignUpRequest,
+        response: HttpServletResponse
     ): ResponseEntity<OauthTokenInfoModel> {
         val oauthTokenInfo = userAuthService.register(signUpRequest)
-        return ResponseEntity(oauthTokenInfo, getAuthCookieHeaders(oauthTokenInfo), HttpStatus.CREATED)
+        CookieUtils.setAuthCookies(oauthTokenInfo, response)
+        return ResponseEntity(oauthTokenInfo, HttpStatus.CREATED)
     }
 
     @PostMapping("/reset-password-request")
@@ -84,11 +88,13 @@ class UserAuthController(
         @PostMapping("/token")
         fun getAccessToken(
             @RequestParam("code") authorizationCode: String,
-            request: HttpServletRequest
+            request: HttpServletRequest,
+            response: HttpServletResponse
         ): ResponseEntity<OauthTokenInfoModel> {
             val oauthTokenInfo =
                 tokenService.getOauthTokenByAuthorizationCode(authorizationCode, request)
-            return ResponseEntity(oauthTokenInfo, getAuthCookieHeaders(oauthTokenInfo), HttpStatus.OK)
+            CookieUtils.setAuthCookies(oauthTokenInfo, response)
+            return ResponseEntity(oauthTokenInfo, HttpStatus.OK)
         }
     }
 }

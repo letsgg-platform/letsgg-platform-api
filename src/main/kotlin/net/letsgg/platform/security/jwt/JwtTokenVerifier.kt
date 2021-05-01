@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import net.letsgg.platform.config.AuthProperties
 import net.letsgg.platform.utility.CookieUtils
-import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -36,13 +35,19 @@ class JwtTokenVerifier(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        if (request.getHeader("Device-Type") == "android") {
-            filterMobileRequest(request, response, filterChain)
-        } else if (request.getHeader("Device-Type") == "web") {
-            filterWebRequest(request, response, filterChain)
+        when (request.getHeader("Device-Type")) {
+            "android" -> {
+                filterMobileRequest(request, response, filterChain)
+            }
+            "web" -> {
+                filterWebRequest(request, response, filterChain)
+            }
+            else -> {
+                filterChain.doFilter(request, response)
+            }
         }
-        filterChain.doFilter(request, response)
     }
+
 
     private fun filterMobileRequest(
         request: HttpServletRequest,
@@ -57,7 +62,7 @@ class JwtTokenVerifier(
     private fun getMobileAccessToken(request: HttpServletRequest): String {
         val authHeader = request.getHeader("Authorization")
         if (authHeader.isNullOrBlank() || !authHeader.startsWith("Bearer ")) {
-            throw RuntimeException("invalid authorization header for mobile client")
+            throw RuntimeException("invalid authorization header")
         }
         return authHeader.replace("Bearer ", "")
     }
@@ -75,9 +80,9 @@ class JwtTokenVerifier(
         val tokenTypeCookie = CookieUtils.getCookie(request, "token_type")
 
         if (tokenTypeCookie == null || accessTokenCookie == null || tokenTypeCookie.value != "Bearer" || accessTokenCookie.value.isEmpty()) {
-            filterChain.doFilter(request, response)
-            return
+            throw RuntimeException("invalid authorization cookies")
         }
+
         var token = accessTokenCookie.value
         if (jwtTokenProviderProxy.isTokenExpired(token)) {
             if (refreshTokenCookie == null) {
@@ -88,7 +93,7 @@ class JwtTokenVerifier(
             token = refreshTokenCookie.value
         }
         setSecurityContext(token)
-        //refresh token here?
+
         if (shouldRefreshToken) {
             refreshToken(response)
         }
@@ -97,26 +102,7 @@ class JwtTokenVerifier(
 
     private fun refreshToken(response: HttpServletResponse) {
         val oauthTokenInfo = jwtTokenProviderProxy.createToken(SecurityContextHolder.getContext().authentication)
-        with(CookieUtils) {
-            addCookie(
-                response,
-                "usaccessjwt",
-                oauthTokenInfo.accessToken,
-                oauthTokenInfo.expiresInMs.toInt() / 1000
-            )
-            addCookie(
-                response,
-                "usrefreshjwt",
-                oauthTokenInfo.refreshToken,
-                oauthTokenInfo.refreshTokenExpiresInMs.toInt() / 1000
-            )
-            addCookie(
-                response,
-                "token_type",
-                oauthTokenInfo.tokenType,
-                oauthTokenInfo.refreshTokenExpiresInMs.toInt() / 1000
-            )
-        }
+        CookieUtils.setAuthCookies(oauthTokenInfo, response)
     }
 
     private fun setSecurityContext(token: String) {
