@@ -1,9 +1,7 @@
 package net.letsgg.platform.utility
 
 import net.letsgg.platform.webapi.dto.OauthTokenInfoModel
-import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
-import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.SerializationUtils
 import java.util.*
 import javax.servlet.http.Cookie
@@ -16,6 +14,9 @@ object CookieUtils {
     private const val DEFAULT_COOKIE_DOMAIN = "letsgg.net"
     private const val DEFAULT_COOKIE_PATH = "/"
     private const val DEFAULT_COOKIE_MAX_AGE = 999L
+    private const val ACCESS_TOKEN_COOKIE = "usaccessjwt"
+    private const val REFRESH_TOKEN_COOKIE = "usrefreshjwt"
+    private const val TOKEN_TYPE_COOKIE = "token_type"
 
     fun getCookie(req: HttpServletRequest, name: String): Cookie? {
         val cookies: Array<Cookie>? = req.cookies
@@ -83,21 +84,27 @@ object CookieUtils {
         )
     }
 
-    fun getAuthCookieHeaders(oauthTokenInfo: OauthTokenInfoModel): HttpHeaders {
-        val accessTokenCookie =
-            newCookie("usaccessjwt", oauthTokenInfo.accessToken, oauthTokenInfo.expiresInMs / 1000)
-        val refreshTokenCookie = newCookie(
-            "usrefreshjwt",
-            oauthTokenInfo.refreshToken,
-            oauthTokenInfo.refreshTokenExpiresInMs / 1000
+    fun setAuthCookies(
+        oauthTokenInfo: OauthTokenInfoModel,
+        response: HttpServletResponse
+    ) {
+        addCookie(
+            response,
+            ACCESS_TOKEN_COOKIE,
+            oauthTokenInfo.accessToken,
+            oauthTokenInfo.expiresInMs.toInt() / 1000
         )
-        val tokenTypeCookie =
-            newCookie("token_type", oauthTokenInfo.tokenType, oauthTokenInfo.refreshTokenExpiresInMs / 1000)
-
-        val cookies =
-            listOf(accessTokenCookie.toString(), refreshTokenCookie.toString(), tokenTypeCookie.toString())
-        val multiValueMap = LinkedMultiValueMap<String, String>()
-        multiValueMap[HttpHeaders.SET_COOKIE] = cookies
-        return HttpHeaders(multiValueMap)
+        addCookie(
+            response,
+            REFRESH_TOKEN_COOKIE,
+            oauthTokenInfo.refreshToken,
+            oauthTokenInfo.refreshTokenExpiresInMs.toInt() / 1000
+        )
+        addCookie(
+            response,
+            TOKEN_TYPE_COOKIE,
+            oauthTokenInfo.tokenType,
+            oauthTokenInfo.refreshTokenExpiresInMs.toInt() / 1000
+        )
     }
 }
