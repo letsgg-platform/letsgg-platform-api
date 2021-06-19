@@ -11,9 +11,24 @@ on:
       - "README.md"
 
 jobs:
-  test:
-    name: Unit-Test
+  build_and_test:
+    name: Build and Test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres        
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 8
@@ -25,7 +40,9 @@ jobs:
       - name: Maven Verify
         run: mvn -B clean verify
         env:
-          mongodb_test_uri:  ${{ secrets.MONGODB_TEST_URI }}
+          spring_datasource_url:  ${{ secrets.SPRING_DATASOURCE_URL }}
+          spring_datasource_username: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          spring_datasource_password: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
           test_email: ${{ secrets.TEST_EMAIL }}
           test_email_pwd: ${{ secrets.TEST_EMAIL_PWD }}
        
