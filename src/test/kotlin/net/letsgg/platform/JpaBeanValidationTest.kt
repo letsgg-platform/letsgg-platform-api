@@ -1,7 +1,7 @@
 package net.letsgg.platform
 
 import net.letsgg.platform.entity.EmailEntry
-import net.letsgg.platform.repository.EmailEntryRepo
+import net.letsgg.platform.repository.EmailEntryRepository
 import net.letsgg.platform.service.newsletter.NewsletterSubscribeServiceFacade
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -17,10 +17,10 @@ import org.springframework.transaction.TransactionSystemException
 
 @ActiveProfiles("test")
 @ExtendWith(value = [SpringExtension::class])
-@Import(value = [GlobalTestsConfig::class])
+@Import(value = [IntegrationTestsConfiguration::class])
 @SpringBootTest
 class JpaBeanValidationTest(
-    @Autowired private val emailEntryRepo: EmailEntryRepo
+  @Autowired private val emailEntryRepository: EmailEntryRepository
 ) {
     @MockBean
     lateinit var newsletterSubscribeServiceFacade: NewsletterSubscribeServiceFacade
@@ -30,7 +30,7 @@ class JpaBeanValidationTest(
         val objectToValidate = EmailEntry("testtest")
 
         assertThrows<TransactionSystemException> {
-            emailEntryRepo.save(objectToValidate)
+          emailEntryRepository.save(objectToValidate)
         }
     }
 }

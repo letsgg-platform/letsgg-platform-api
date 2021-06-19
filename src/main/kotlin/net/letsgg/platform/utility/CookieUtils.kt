@@ -1,6 +1,6 @@
 package net.letsgg.platform.utility
 
-import net.letsgg.platform.webapi.dto.OauthTokenInfoModel
+import net.letsgg.platform.api.dto.OauthTokenInfoDto
 import org.springframework.http.ResponseCookie
 import org.springframework.util.SerializationUtils
 import java.util.*
@@ -85,8 +85,8 @@ object CookieUtils {
     }
 
     fun setAuthCookies(
-        oauthTokenInfo: OauthTokenInfoModel,
-        response: HttpServletResponse
+      oauthTokenInfo: OauthTokenInfoDto,
+      response: HttpServletResponse
     ) {
         addCookie(
             response,

@@ -1,4 +1,4 @@
-package net.letsgg.platform.webapi.dto
+package net.letsgg.platform.api.dto
 
 class UserAuthResponse(
     val username: String,

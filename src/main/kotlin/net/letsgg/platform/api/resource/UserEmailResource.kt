@@ -1,4 +1,4 @@
-package net.letsgg.platform.webapi.controller
+package net.letsgg.platform.api.resource
 
 import net.letsgg.platform.service.newsletter.NewsletterSubscribeServiceFacade
 import org.springframework.http.HttpStatus
@@ -14,17 +14,17 @@ import java.util.*
 @RequestMapping("api/email-service")
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @Deprecated(level = DeprecationLevel.WARNING, message = "Will be replaced by user email preferences")
-class UserEmailController(
-    private val newsletterSubscribeServiceFacade: NewsletterSubscribeServiceFacade
+class UserEmailResource(
+  private val newsletterSubscribeServiceFacade: NewsletterSubscribeServiceFacade
 ) {
-    @PostMapping("/newsletter-signup/{userEmail}")
-    fun subscribeForNewsletter(@PathVariable userEmail: String): ResponseEntity<Unit> {
-        newsletterSubscribeServiceFacade.signUpForNewsletterAndSendWelcomeMail(userEmail)
-        return ResponseEntity(HttpStatus.OK)
-    }
+  @PostMapping("/newsletter-signup/{userEmail}")
+  fun subscribeForNewsletter(@PathVariable userEmail: String): ResponseEntity<Unit> {
+    newsletterSubscribeServiceFacade.signUpForNewsletterAndSendWelcomeMail(userEmail)
+    return ResponseEntity(HttpStatus.OK)
+  }
 
-    @GetMapping("/newsletter-unsubscribe-{id}")
-    fun unsubscribeFromNewsletter(@PathVariable("id") emailEntryId: UUID): String {
+  @GetMapping("/newsletter-unsubscribe-{id}")
+  fun unsubscribeFromNewsletter(@PathVariable("id") emailEntryId: UUID): String {
         val messageOnSuccessfulUnsubscribe = "Unsubscribed."
         newsletterSubscribeServiceFacade.unsubscribeFromNewsletterAndSendByeMail(emailEntryId)
         return messageOnSuccessfulUnsubscribe

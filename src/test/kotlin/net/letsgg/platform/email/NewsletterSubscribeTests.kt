@@ -1,8 +1,8 @@
 package net.letsgg.platform.email
 
-import net.letsgg.platform.GlobalTestsConfig
+import net.letsgg.platform.IntegrationTestsConfiguration
 import net.letsgg.platform.entity.EmailEntry
-import net.letsgg.platform.repository.EmailEntryRepo
+import net.letsgg.platform.repository.EmailEntryRepository
 import net.letsgg.platform.service.newsletter.NewsletterSubscribeService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -19,28 +19,28 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import javax.validation.ConstraintViolationException
 
 
-@Import(value = [GlobalTestsConfig::class])
+@Import(value = [IntegrationTestsConfiguration::class])
 @ExtendWith(value = [SpringExtension::class])
 @ContextConfiguration(classes = [NewsletterSubscribeService::class])
 @ActiveProfiles("test")
 class NewsletterSubscribeTests {
 
-    @MockBean
-    private lateinit var emailEntryRepo: EmailEntryRepo
+  @MockBean
+  private lateinit var emailEntryRepository: EmailEntryRepository
 
-    @Autowired
-    private lateinit var newsletterSubscribeService: NewsletterSubscribeService
+  @Autowired
+  private lateinit var newsletterSubscribeService: NewsletterSubscribeService
 
-    @Test
-    fun throwsExceptionWhenNotValidEmail() {
-        assertThrows<ConstraintViolationException> {
-            newsletterSubscribeService.signUpForNewsFeed("test")
-        }
+  @Test
+  fun throwsExceptionWhenNotValidEmail() {
+    assertThrows<ConstraintViolationException> {
+      newsletterSubscribeService.signUpForNewsFeed("test")
     }
+  }
 
     @Test
     fun doesNotThrowWhenEmailIsValid() {
-        doReturn(EmailEntry("")).`when`(emailEntryRepo).save(any())
+      doReturn(EmailEntry("")).`when`(emailEntryRepository).save(any())
 
         assertDoesNotThrow {
             newsletterSubscribeService.signUpForNewsFeed("test@gmail.com")

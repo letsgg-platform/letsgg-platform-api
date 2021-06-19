@@ -1,7 +1,6 @@
-package net.letsgg.platform.webapi.dto
+package net.letsgg.platform.api.dto
 
 import net.letsgg.platform.entity.Dto
-import java.time.LocalDate
 
 /*
 * dto for updating user fields

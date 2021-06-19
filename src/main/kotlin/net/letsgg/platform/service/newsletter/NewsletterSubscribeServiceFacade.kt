@@ -13,6 +13,7 @@ import java.util.*
 
 @Service
 @Transactional
+@Deprecated(message = "Will be replaced with User Mail Preferences")
 class NewsletterSubscribeServiceFacade(
     private val emailSenderService: EmailSenderService,
     private val templateEngine: TemplateEngine,

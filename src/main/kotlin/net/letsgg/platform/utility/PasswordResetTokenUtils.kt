@@ -1,4 +1,4 @@
-package net.letsgg.platform.entity
+package net.letsgg.platform.utility
 
 import java.util.*
 

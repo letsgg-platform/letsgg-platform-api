@@ -1,4 +1,4 @@
-package net.letsgg.platform.webapi.controller.population
+package net.letsgg.platform.api.resource.population
 
 import net.letsgg.platform.entity.LetsggUser
 import net.letsgg.platform.security.AppUserRole
