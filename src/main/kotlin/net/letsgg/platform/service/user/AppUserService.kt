@@ -1,7 +1,7 @@
 package net.letsgg.platform.service.user
 
+import net.letsgg.platform.api.dto.AppUserRequestDto
 import net.letsgg.platform.entity.LetsggUser
-import net.letsgg.platform.webapi.dto.AppUserRequestDto
 import java.util.*
 
 interface AppUserService {

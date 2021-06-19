@@ -1,23 +1,18 @@
 package net.letsgg.platform.security.oauth2
 
-import net.bytebuddy.utility.RandomString
+import net.letsgg.platform.api.mapper.LetsggUserMapper
 import net.letsgg.platform.entity.LetsggUser
 import net.letsgg.platform.exception.OAuth2AuthenticationProcessingException
 import net.letsgg.platform.exception.ResourceNotFoundException
-import net.letsgg.platform.mapper.LetsggUserMapper
-import net.letsgg.platform.repository.LetsggUserRepository
 import net.letsgg.platform.security.AppUserDetails
 import net.letsgg.platform.service.user.AppUserService
 import net.letsgg.platform.utility.LoggerDelegate
+import org.springframework.security.authentication.InternalAuthenticationServiceException
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
-import java.util.*
-import org.springframework.security.authentication.InternalAuthenticationServiceException
-import org.springframework.security.core.AuthenticationException
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.transaction.annotation.Transactional
 
 /**
  * Custom OAuth2 service. Used for extracting user info from the access token,

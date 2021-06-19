@@ -7,7 +7,6 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
 
 @SpringBootApplication
-@ComponentScan("net.letsgg.platform.*")
 @EnableConfigurationProperties(value = [AuthProperties::class])
 class LetsggCoreServiceApplication
 

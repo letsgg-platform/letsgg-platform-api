@@ -22,7 +22,7 @@ class OpenApiConfig {
 
     @Bean
     fun openApi(): Docket = Docket(DocumentationType.SWAGGER_2).select()
-        .apis(RequestHandlerSelectors.basePackage("net.letsgg.platform.webapi.controller"))
+      .apis(RequestHandlerSelectors.basePackage("net.letsgg.platform.api.resource"))
         .paths(PathSelectors.any())
         .build()
         .ignoredParameterTypes(CurrentUser::class.java)
@@ -31,7 +31,7 @@ class OpenApiConfig {
         .apiInfo(openApiInfo())
 
     private fun openApiInfo() = ApiInfoBuilder()
-        .title("let'sGG Platform API")
+      .title("Let'sGG Platform API")
         .description("")
         .contact(Contact("Roman Tupis", "https://t.me/romm1", "romantupss@gmail.com"))
         .license("")
@@ -47,11 +47,12 @@ class OpenApiConfig {
             .build()
 
     fun defaultAuth(): List<SecurityReference> {
-        val authorizationScope = AuthorizationScope("global", "accessEverything")
-        val authorizationScopes: Array<AuthorizationScope?> = arrayOfNulls<AuthorizationScope>(1)
-        authorizationScopes[0] = authorizationScope
-        return listOf(
-            SecurityReference("JWT", authorizationScopes))
+      val authorizationScope = AuthorizationScope("global", "accessEverything")
+      val authorizationScopes: Array<AuthorizationScope?> = arrayOfNulls(1)
+      authorizationScopes[0] = authorizationScope
+      return listOf(
+        SecurityReference("JWT", authorizationScopes)
+      )
     }
 
     private fun apiKey() = ApiKey("JWT", "Authorization", "header")

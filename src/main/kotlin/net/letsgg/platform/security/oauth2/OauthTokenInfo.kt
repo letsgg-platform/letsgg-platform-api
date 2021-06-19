@@ -9,7 +9,6 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-//@Table(name = "oauth_token_info", schema = "public")
 class OauthTokenInfo(
     @field:Column(unique = true, nullable = false)
     val authorizationCode: String,

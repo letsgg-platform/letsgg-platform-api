@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import net.letsgg.platform.config.AuthProperties
+import net.letsgg.platform.service.auth.token.JwtTokenUtilService
 import net.letsgg.platform.utility.CookieUtils
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -15,8 +16,15 @@ import javax.servlet.http.HttpServletResponse
 
 class JwtTokenVerifier(
     private val authProperties: AuthProperties,
-    private val jwtTokenProviderProxy: JwtTokenProviderProxy
+    private val authorizationTokenService: AuthorizationTokenService,
+    private val jwtTokenUtilService: JwtTokenUtilService
 ) : OncePerRequestFilter() {
+
+    companion object {
+        private const val DEVICE_TYPE_HEADER = "Device-Type"
+        private const val ANDROID_DEVICE = "android"
+        private const val WEB_DEVICE = "web"
+    }
 
     /**
      * Determines the platform of the request.
@@ -35,11 +43,11 @@ class JwtTokenVerifier(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        when (request.getHeader("Device-Type")) {
-            "android" -> {
+        when (request.getHeader(DEVICE_TYPE_HEADER)) {
+            ANDROID_DEVICE -> {
                 filterMobileRequest(request, response, filterChain)
             }
-            "web" -> {
+            WEB_DEVICE -> {
                 filterWebRequest(request, response, filterChain)
             }
             else -> {
@@ -84,7 +92,7 @@ class JwtTokenVerifier(
         }
 
         var token = accessTokenCookie.value
-        if (jwtTokenProviderProxy.isTokenExpired(token)) {
+        if (jwtTokenUtilService.isTokenExpired(token)) {
             if (refreshTokenCookie == null) {
                 filterChain.doFilter(request, response)
                 return
@@ -101,7 +109,7 @@ class JwtTokenVerifier(
     }
 
     private fun refreshToken(response: HttpServletResponse) {
-        val oauthTokenInfo = jwtTokenProviderProxy.createToken(SecurityContextHolder.getContext().authentication)
+        val oauthTokenInfo = authorizationTokenService.createToken(SecurityContextHolder.getContext().authentication)
         CookieUtils.setAuthCookies(oauthTokenInfo, response)
     }
 
