@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
@@ -33,6 +34,7 @@ class AppResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 //    }
 
   @ExceptionHandler(value = [Exception::class])
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   protected fun handleInternalException(ex: Exception, req: ServletWebRequest): ResponseEntity<Any> {
     logger.error(String.format(INTERNAL_EXCEPTION, ex.localizedMessage), ex)
     val internalException = InternalException(String.format(INTERNAL_EXCEPTION, ex.localizedMessage), ex)
@@ -67,7 +69,7 @@ class AppResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
   }
 
   @ExceptionHandler(value = [EmailAlreadyInUseException::class])
-  protected fun handleResourceNotFoundException(
+  protected fun handleEmailAlreadyInUseException(
     ex: EmailAlreadyInUseException,
     req: ServletWebRequest
   ): ResponseEntity<Any> {
@@ -87,7 +89,7 @@ class AppResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
     req: ServletWebRequest
   ): ResponseEntity<Any> {
     logger.error(String.format(VALIDATION_EXCEPTION, ex.localizedMessage), ex)
-    val apiError = ApiError(HttpStatus.CONFLICT, ex.message, req.request.requestURI)
+    val apiError = ApiError(HttpStatus.BAD_REQUEST, ex.message, req.request.requestURI)
     return handleExceptionInternal(
       ex,
       apiError,
