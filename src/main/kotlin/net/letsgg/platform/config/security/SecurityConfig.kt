@@ -46,18 +46,11 @@ class SecurityConfig(
 ) : WebSecurityConfigurerAdapter() {
 
   companion object SecurityUtils {
-    private val OPEN_API_WHITELIST = arrayOf(
-      "/v2/api-docs**",
-      "/swagger-resources",
-      "/swagger-resources/**",
-      "/configuration/ui",
-      "/configuration/security",
-      "/swagger-ui.html#/**",
-      "/swagger-ui**",
-      "/swagger-ui/**",
-      "/webjars/**",
-      "/actuator/**"
-    )
+private val OPEN_API_WHITELIST = arrayOf(
+  "/v3/api-docs",
+  "/v3/api-docs/swagger-config",
+  "/swagger-ui/**",
+)
   }
 
   override fun configure(http: HttpSecurity) {
