@@ -8,7 +8,7 @@ class ResourceNotFoundException(message: String) : RuntimeException(message) {
         fun notExistsByFieldSupplier(field: String, value: String): Throwable =
             throw ResourceNotFoundException(
                 String.format(
-                    getLocalizedMessage("entity.not-exists"),
+                    getLocalizedMessage("entity.not-exists.exception"),
                     field,
                     value
                 )
