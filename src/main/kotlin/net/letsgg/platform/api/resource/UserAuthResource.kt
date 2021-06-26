@@ -1,10 +1,16 @@
 package net.letsgg.platform.api.resource
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import net.letsgg.platform.api.dto.LoginRequest
 import net.letsgg.platform.api.dto.OauthTokenInfoDto
 import net.letsgg.platform.api.dto.SignUpRequest
 import net.letsgg.platform.api.mapper.LetsggUserMapper
 import net.letsgg.platform.api.mapper.OauthTokenInfoMapper
+import net.letsgg.platform.exception.handler.ApiError
 import net.letsgg.platform.service.auth.CoreUserAuthService
 import net.letsgg.platform.service.auth.token.AppTokenService
 import net.letsgg.platform.service.oauth.OauthTokenService
@@ -32,6 +38,29 @@ class UserAuthResource(
 ) {
   private val logger by LoggerDelegate()
 
+  @Operation(summary = "User Login")
+  @ApiResponses(
+    value = [
+      ApiResponse(
+        responseCode = "200", description = "Successful Login",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = OauthTokenInfoDto::class)
+          )
+        ]
+      ),
+      ApiResponse(
+        responseCode = "401", description = "Invalid Credentials Supplied",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ApiError::class)
+          )
+        ]
+      )
+    ]
+  )
   @PostMapping("/login")
   fun loginUser(
     @RequestBody loginRequest: LoginRequest,
@@ -43,6 +72,29 @@ class UserAuthResource(
     return ResponseEntity(oauthTokenInfo, HttpStatus.OK)
   }
 
+  @Operation(summary = "User Register")
+  @ApiResponses(
+    value = [
+      ApiResponse(
+        responseCode = "201", description = "User Created",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = OauthTokenInfoDto::class)
+          )
+        ]
+      ),
+      ApiResponse(
+        responseCode = "406", description = "Validation Failed For Supplied Fields",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ApiError::class)
+          )
+        ]
+      )
+    ]
+  )
   @PostMapping("/register")
   fun signUp(
     @RequestBody @Valid signUpRequest: SignUpRequest,
