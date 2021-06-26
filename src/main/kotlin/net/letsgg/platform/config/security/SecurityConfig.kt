@@ -50,6 +50,7 @@ private val OPEN_API_WHITELIST = arrayOf(
   "/v3/api-docs",
   "/v3/api-docs/swagger-config",
   "/swagger-ui/**",
+  "/swagger-ui.html"
 )
   }
 

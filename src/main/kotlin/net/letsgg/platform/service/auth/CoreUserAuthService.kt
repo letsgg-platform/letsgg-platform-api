@@ -34,7 +34,7 @@ class CoreUserAuthService(
       attemptAuthentication(loginRequest)
     } catch (ex: AuthenticationException) {
       logger.error(String.format(INVALID_LOGIN_CREDENTIALS, ex.localizedMessage), ex)
-      throw InvalidLoginCredentialsException(String.format(INVALID_LOGIN_CREDENTIALS, ex.localizedMessage), ex)
+      throw InvalidLoginCredentialsException(INVALID_LOGIN_CREDENTIALS, ex)
     }
     return authorizationTokenService.createToken(authentication)
   }

@@ -1,8 +1,14 @@
 package net.letsgg.platform.api.resource
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import net.letsgg.platform.api.dto.AppUserResponseDto
 import net.letsgg.platform.api.dto.UserFinishSetupModel
 import net.letsgg.platform.api.mapper.LetsggUserMapper
+import net.letsgg.platform.exception.handler.ApiError
 import net.letsgg.platform.security.CurrentUser
 import net.letsgg.platform.security.Preauthorized
 import net.letsgg.platform.service.user.AppUserService
@@ -22,6 +28,30 @@ class UserInfoResource(
   private val userMapper: LetsggUserMapper,
 ) {
 
+
+  @Operation(summary = "Get Currently Logged-In User")
+  @ApiResponses(
+    value = [
+      ApiResponse(
+        responseCode = "200",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = AppUserResponseDto::class)
+          )
+        ]
+      ),
+      ApiResponse(
+        responseCode = "401", description = "Login Required",
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ApiError::class)
+          )
+        ]
+      )
+    ]
+  )
   @GetMapping("/me")
   @PreAuthorize(Preauthorized.WITH_AUTHORITY_USER_INFO)
   fun getCurrentUser(@CurrentUser email: String): ResponseEntity<AppUserResponseDto> {
