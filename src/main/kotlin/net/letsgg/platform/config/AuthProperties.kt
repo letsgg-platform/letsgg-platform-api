@@ -10,4 +10,5 @@ class AuthProperties {
     lateinit var tokenExpireInMs: String
     lateinit var refreshTokenExpireInMs: String
     lateinit var authorizedRedirectUris: List<String>
+    lateinit var corsAllowedOrigins: List<String>
 }
