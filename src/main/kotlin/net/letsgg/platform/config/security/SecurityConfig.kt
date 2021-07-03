@@ -113,7 +113,7 @@ private val OPEN_API_WHITELIST = arrayOf(
   @Bean
   fun corsConfigurationSource(): CorsConfigurationSource {
     val configuration = CorsConfiguration()
-    configuration.allowedOrigins = listOf("https://web-integration.letsgg.net")
+    configuration.allowedOrigins = authProperties.corsAllowedOrigins
     configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
     configuration.allowedHeaders = listOf(
       ACCESS_CONTROL_ALLOW_ORIGIN, ACCESS_CONTROL_ALLOW_HEADERS,
