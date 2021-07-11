@@ -7,6 +7,7 @@ import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.Past
+import javax.validation.constraints.Size
 
 @Entity
 @Table(
@@ -16,8 +17,10 @@ import javax.validation.constraints.Past
 )
 class LetsggUser(
     var name: String? = null,
-    var username: String? = null,
+    @field:Size(min = 3, max = 12) var username: String,
     @field:Email var email: String,
+    @Enumerated(EnumType.STRING)
+    var gender: Gender = Gender.UNDEFINED,
     var passwordHash: String,
     @Enumerated(EnumType.STRING)
     var userRole: AppUserRole = AppUserRole.UNFINISHED_SETUP_USER,
@@ -28,11 +31,17 @@ class LetsggUser(
     val isEmailVerified: Boolean = false,
 ) : AbstractJpaPersistable<UUID>() {
 
-    var country: String? = null
-
     @field:Past
     var birthdayDate: LocalDate? = null
     var imageUrl: String? = null
+
+    @field:OneToMany(fetch = FetchType.LAZY)
+    @field:JoinTable(
+        name = "user_spoken_language",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "locale_id")]
+    )
+    var spokenLanguages: List<LocaleEntity>? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -46,7 +55,6 @@ class LetsggUser(
         if (email != other.email) return false
         if (passwordHash != other.passwordHash) return false
         if (birthdayDate != other.birthdayDate) return false
-        if (country != other.country) return false
         if (userRole != other.userRole) return false
 
         return true
@@ -59,12 +67,11 @@ class LetsggUser(
         result = 31 * result + email.hashCode()
         result = 31 * result + passwordHash.hashCode()
         result = 31 * result + birthdayDate.hashCode()
-        result = 31 * result + country.hashCode()
         result = 31 * result + userRole.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "${super.toString()}, name='$name', username='$username', email='$email', passwordHash='$passwordHash', birthdayDate=$birthdayDate, country='$country', userRole=$userRole)"
+        return "${super.toString()}, name='$name', username='$username', email='$email', passwordHash='$passwordHash', birthdayDate=$birthdayDate, userRole=$userRole)"
     }
 }
