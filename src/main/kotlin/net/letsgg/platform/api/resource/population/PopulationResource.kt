@@ -1,5 +1,6 @@
 package net.letsgg.platform.api.resource.population
 
+import net.letsgg.platform.entity.Gender
 import net.letsgg.platform.entity.LetsggUser
 import net.letsgg.platform.security.AppUserRole
 import net.letsgg.platform.security.oauth2.UserAuthProvider
@@ -20,7 +21,7 @@ class PopulationResource(
     fun populateUsers() {
         val user1 = LetsggUser(
             "Roman Samurai", "romm1", "romantupss@ukr.net",
-            passwordEncoder.encode("foo"), AppUserRole.USER, UserAuthProvider.LOCAL, "letsgg-platform"
+            Gender.UNDEFINED, passwordEncoder.encode("foo"), AppUserRole.USER, UserAuthProvider.LOCAL, "letsgg-platform"
         )
         userService.save(user1)
     }

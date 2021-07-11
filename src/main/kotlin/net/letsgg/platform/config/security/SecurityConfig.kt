@@ -46,18 +46,12 @@ class SecurityConfig(
 ) : WebSecurityConfigurerAdapter() {
 
   companion object SecurityUtils {
-    private val OPEN_API_WHITELIST = arrayOf(
-      "/v2/api-docs**",
-      "/swagger-resources",
-      "/swagger-resources/**",
-      "/configuration/ui",
-      "/configuration/security",
-      "/swagger-ui.html#/**",
-      "/swagger-ui**",
-      "/swagger-ui/**",
-      "/webjars/**",
-      "/actuator/**"
-    )
+private val OPEN_API_WHITELIST = arrayOf(
+  "/v3/api-docs",
+  "/v3/api-docs/swagger-config",
+  "/swagger-ui/**",
+  "/swagger-ui.html"
+)
   }
 
   override fun configure(http: HttpSecurity) {
@@ -119,7 +113,7 @@ class SecurityConfig(
   @Bean
   fun corsConfigurationSource(): CorsConfigurationSource {
     val configuration = CorsConfiguration()
-    configuration.allowedOrigins = listOf("https://web-integration.letsgg.net")
+    configuration.allowedOrigins = authProperties.corsAllowedOrigins
     configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
     configuration.allowedHeaders = listOf(
       ACCESS_CONTROL_ALLOW_ORIGIN, ACCESS_CONTROL_ALLOW_HEADERS,
