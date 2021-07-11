@@ -10,6 +10,7 @@ import net.letsgg.platform.api.dto.OauthTokenInfoDto
 import net.letsgg.platform.api.dto.SignUpRequest
 import net.letsgg.platform.api.mapper.LetsggUserMapper
 import net.letsgg.platform.api.mapper.OauthTokenInfoMapper
+import net.letsgg.platform.exception.InvalidResetPasswordTokenException
 import net.letsgg.platform.exception.handler.ApiError
 import net.letsgg.platform.service.auth.CoreUserAuthService
 import net.letsgg.platform.service.auth.token.AppTokenService
@@ -20,6 +21,8 @@ import net.letsgg.platform.utility.LoggerDelegate
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
@@ -118,23 +121,6 @@ class UserAuthResource(
     return ResponseEntity(userAuthService.refreshToken(authentication), HttpStatus.OK)
   }
 
-  @GetMapping("/reset-password-confirm")
-  fun showChangePasswordPage(@RequestParam token: String) {
-    tokenService.validateResetPasswordToken(token)
-    //if validation ok, render and show page
-  }
-
-  @PostMapping("/update-password")
-  fun updatePassword(@RequestBody changePasswordDto: ChangePasswordDto): ResponseEntity<Unit> {
-    tokenService.validateResetPasswordToken(changePasswordDto.token)
-
-    userSettingsService.changeUserPassword(changePasswordDto.newPassword, changePasswordDto.token)
-    return ResponseEntity(HttpStatus.OK)
-  }
-
-  data class ChangePasswordDto(
-    val token: String, val newPassword: String,
-  )
 
   @RestController
   @RequestMapping("api/oauth2")
@@ -161,5 +147,43 @@ class UserAuthResource(
       CookieUtils.setAuthCookies(oauthTokenInfoDto, response)
       return ResponseEntity(oauthTokenInfoDto, HttpStatus.OK)
     }
+  }
+
+  @Controller
+  @RequestMapping("/api/auth")
+  internal class UserForgotPassResource(
+    private val userSettingsService: AppUserSettingsService,
+    private val tokenService: AppTokenService
+  ) {
+
+    @GetMapping("/reset-password")
+    fun showChangePasswordPage(@RequestParam token: String, model: Model): String {
+      return try {
+        tokenService.validateResetPasswordToken(token)
+        model.addAttribute(ChangePasswordRequest())
+        "reset-password"
+      } catch (ex: InvalidResetPasswordTokenException) {
+        "redirect:/"
+      }
+    }
+
+    @PostMapping("/update-password")
+    fun updatePassword(
+      @RequestParam token: String,
+      @ModelAttribute changePasswordRequest: ChangePasswordRequest
+    ): String {
+      return try {
+        tokenService.validateResetPasswordToken(token)
+        userSettingsService.changeUserPassword(requireNotNull(changePasswordRequest.newPassword), token)
+        "redirect:/"
+      } catch (ex: InvalidResetPasswordTokenException) {
+        "redirect:/login"
+      }
+    }
+
+    class ChangePasswordRequest {
+      var newPassword: String? = null
+    }
+
   }
 }
