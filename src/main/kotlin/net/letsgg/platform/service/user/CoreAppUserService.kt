@@ -89,7 +89,6 @@ class CoreAppUserService(
   private fun updUserFields(updatedUser: AppUserRequestDto, user2Upd: LetsggUser) = user2Upd.apply {
     name = updatedUser.fullName
     email = updatedUser.email
-    country = updatedUser.country
   }
 
   @Transactional(readOnly = true)

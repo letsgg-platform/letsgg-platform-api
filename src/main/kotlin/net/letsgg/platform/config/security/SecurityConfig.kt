@@ -69,6 +69,7 @@ private val OPEN_API_WHITELIST = arrayOf(
       .antMatchers(*OPEN_API_WHITELIST).permitAll()
 //            .antMatchers(HttpMethod.GET, "/api/user-info/me")
 //            .hasAuthority(USER_INFO.getPermission())
+      .antMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
       .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
       .antMatchers("/api/population-resource").permitAll()
       .antMatchers("/api/email-service/**").permitAll()

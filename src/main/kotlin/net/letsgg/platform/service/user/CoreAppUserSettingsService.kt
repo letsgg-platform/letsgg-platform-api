@@ -6,11 +6,13 @@ import net.letsgg.platform.repository.PasswordResetTokenRepository
 import net.letsgg.platform.service.email.EmailSenderService
 import net.letsgg.platform.utility.LoggerDelegate
 import net.letsgg.platform.utility.PasswordResetTokenUtils
+import org.springframework.context.ApplicationContext
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
+import org.thymeleaf.spring5.expression.ThymeleafEvaluationContext
 
 @Component
 @Transactional
@@ -19,7 +21,8 @@ class CoreAppUserSettingsService(
   private val userService: AppUserService,
   private val passwordEncoder: PasswordEncoder,
   private val emailSenderService: EmailSenderService,
-  private val templateEngine: TemplateEngine
+  private val templateEngine: TemplateEngine,
+  private val applicationContext: ApplicationContext
 ) : AppUserSettingsService {
 
   private val log by LoggerDelegate()
@@ -49,8 +52,12 @@ class CoreAppUserSettingsService(
     val thymeLeafContext = Context().apply {
       setVariable("username", user.username)
       setVariable("resetToken", resetPasswordToken)
+      setVariable(
+        ThymeleafEvaluationContext.THYMELEAF_EVALUATION_CONTEXT_CONTEXT_VARIABLE_NAME,
+        ThymeleafEvaluationContext(applicationContext, null)
+      )
     }
-    val content = templateEngine.process("reset-password-confirm.html", thymeLeafContext)
+    val content = templateEngine.process("reset-password-email.html", thymeLeafContext)
     emailSenderService.sendEmailWithThymeleafTemplate(
       content, thymeLeafContext, "Confirm Password Reset",
       user.email, true, listOf()
