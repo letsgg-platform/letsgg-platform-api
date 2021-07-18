@@ -2,9 +2,9 @@ package net.letsgg.platform.service.auth
 
 import net.letsgg.platform.api.dto.LoginRequest
 import net.letsgg.platform.api.dto.OauthTokenInfoDto
-import net.letsgg.platform.api.dto.SignUpRequest
+import net.letsgg.platform.api.dto.UserDto
 
 interface UserAuthService {
   fun login(loginRequest: LoginRequest): OauthTokenInfoDto
-  fun register(signUpRequest: SignUpRequest): OauthTokenInfoDto
+  fun register(userDto: UserDto): OauthTokenInfoDto
 }

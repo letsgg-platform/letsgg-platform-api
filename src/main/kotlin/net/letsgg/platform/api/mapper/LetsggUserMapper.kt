@@ -1,8 +1,7 @@
 package net.letsgg.platform.api.mapper
 
 import net.bytebuddy.utility.RandomString
-import net.letsgg.platform.api.dto.AppUserResponseDto
-import net.letsgg.platform.api.dto.SignUpRequest
+import net.letsgg.platform.api.dto.UserDto
 import net.letsgg.platform.entity.LetsggUser
 import net.letsgg.platform.security.oauth2.OAuth2UserInfo
 import net.letsgg.platform.security.oauth2.UserAuthProvider
@@ -13,20 +12,23 @@ import org.springframework.stereotype.Component
 @Component
 class LetsggUserMapper(
   private val passwordEncoder: PasswordEncoder
-) : Mapper<LetsggUser, SignUpRequest, AppUserResponseDto> {
+) {
 
-  override fun toDto(entity: LetsggUser): AppUserResponseDto {
-    return AppUserResponseDto(
+  fun convert(entity: LetsggUser): UserDto {
+    return UserDto(
       email = entity.email,
-      hasFinishedSetup = entity.hasFinishedSetup,
+      fullName = entity.name,
+      userName = entity.username,
+    ).apply {
+      hasFinishedSetup = entity.hasFinishedSetup
       isEmailVerified = entity.isEmailVerified
-    )
+    }
   }
 
-  override fun toEntity(dto: SignUpRequest): LetsggUser {
+  fun convert(dto: UserDto): LetsggUser {
     return LetsggUser(
-      name = dto.name,
-      username = dto.username,
+      name = dto.fullName,
+      username = dto.userName,
       email = dto.email,
       passwordHash = passwordEncoder.encode(dto.password),
       authProvider = LOCAL,
@@ -34,7 +36,7 @@ class LetsggUserMapper(
     )
   }
 
-  fun toEntity(oAuth2UserInfo: OAuth2UserInfo, oauth2Provider: UserAuthProvider): LetsggUser {
+  fun convert(oAuth2UserInfo: OAuth2UserInfo, oauth2Provider: UserAuthProvider): LetsggUser {
     return LetsggUser(
       name = oAuth2UserInfo.getName(),
       username = oAuth2UserInfo.getLogin(),

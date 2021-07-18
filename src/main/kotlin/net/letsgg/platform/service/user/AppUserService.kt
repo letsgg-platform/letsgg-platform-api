@@ -1,6 +1,6 @@
 package net.letsgg.platform.service.user
 
-import net.letsgg.platform.api.dto.AppUserRequestDto
+import net.letsgg.platform.api.dto.UserDto
 import net.letsgg.platform.entity.LetsggUser
 import java.util.*
 
@@ -12,7 +12,7 @@ interface AppUserService {
     fun get(id: UUID): LetsggUser
     fun getByUsername(username: String): LetsggUser
     fun getAll(): List<LetsggUser>
-    fun update(updatedUser: AppUserRequestDto, id: UUID): LetsggUser
+    fun update(updatedUser: UserDto, id: UUID): LetsggUser
     fun existsByUsername(username: String): Boolean
     fun existsByEmail(userEmail: String): Boolean
     fun getByEmail(email: String): LetsggUser
