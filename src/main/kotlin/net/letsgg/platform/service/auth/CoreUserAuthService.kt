@@ -2,7 +2,7 @@ package net.letsgg.platform.service.auth
 
 import net.letsgg.platform.api.dto.LoginRequest
 import net.letsgg.platform.api.dto.OauthTokenInfoDto
-import net.letsgg.platform.api.dto.SignUpRequest
+import net.letsgg.platform.api.dto.UserDto
 import net.letsgg.platform.api.mapper.LetsggUserMapper
 import net.letsgg.platform.exception.EmailAlreadyInUseException
 import net.letsgg.platform.exception.InvalidLoginCredentialsException
@@ -39,15 +39,15 @@ class CoreUserAuthService(
     return authorizationTokenService.createToken(authentication)
   }
 
-  override fun register(signUpRequest: SignUpRequest): OauthTokenInfoDto {
-    if (userService.existsByEmail(signUpRequest.email)) {
-      logger.error(String.format(EMAIL_ALREADY_USED, signUpRequest.email))
-      throw EmailAlreadyInUseException(String.format(EMAIL_ALREADY_USED, signUpRequest.email))
+  override fun register(userDto: UserDto): OauthTokenInfoDto {
+    if (userService.existsByEmail(userDto.email)) {
+      logger.error(String.format(EMAIL_ALREADY_USED, userDto.email))
+      throw EmailAlreadyInUseException(String.format(EMAIL_ALREADY_USED, userDto.email))
     }
-    userService.save(userMapper.toEntity(signUpRequest))
+    userService.save(userMapper.convert(userDto))
 
     val authentication = attemptAuthentication(
-      LoginRequest(signUpRequest.email, signUpRequest.password)
+      LoginRequest(userDto.email, userDto.password!!)
     )
     return authorizationTokenService.createToken(authentication)
   }

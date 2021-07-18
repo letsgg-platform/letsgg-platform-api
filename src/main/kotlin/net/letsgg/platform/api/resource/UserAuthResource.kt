@@ -1,5 +1,6 @@
 package net.letsgg.platform.api.resource
 
+import com.fasterxml.jackson.annotation.JsonView
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -7,9 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import net.letsgg.platform.api.dto.LoginRequest
 import net.letsgg.platform.api.dto.OauthTokenInfoDto
-import net.letsgg.platform.api.dto.SignUpRequest
+import net.letsgg.platform.api.dto.UserDto
 import net.letsgg.platform.api.mapper.LetsggUserMapper
 import net.letsgg.platform.api.mapper.OauthTokenInfoMapper
+import net.letsgg.platform.api.view.Views
 import net.letsgg.platform.exception.InvalidResetPasswordTokenException
 import net.letsgg.platform.exception.handler.ApiError
 import net.letsgg.platform.service.auth.CoreUserAuthService
@@ -100,11 +102,11 @@ class UserAuthResource(
   )
   @PostMapping("/register")
   fun signUp(
-    @RequestBody @Valid signUpRequest: SignUpRequest,
+    @JsonView(Views.Request::class) @RequestBody @Valid userDto: UserDto,
     response: HttpServletResponse
   ): ResponseEntity<OauthTokenInfoDto> {
-    logger.debug("signing up user w/ email ${signUpRequest.email}")
-    val oauthTokenInfo = userAuthService.register(signUpRequest)
+    logger.debug("signing up user w/ email ${userDto.email}")
+    val oauthTokenInfo = userAuthService.register(userDto)
     CookieUtils.setAuthCookies(oauthTokenInfo, response)
     return ResponseEntity(oauthTokenInfo, HttpStatus.CREATED)
   }
@@ -143,7 +145,7 @@ class UserAuthResource(
       oauthTokenInfo.id?.let {
         oauthTokenService.deleteById(it)
       }
-      val oauthTokenInfoDto = oauthTokenInfoMapper.toDto(oauthTokenInfo)
+      val oauthTokenInfoDto = oauthTokenInfoMapper.convert(oauthTokenInfo)
       CookieUtils.setAuthCookies(oauthTokenInfoDto, response)
       return ResponseEntity(oauthTokenInfoDto, HttpStatus.OK)
     }

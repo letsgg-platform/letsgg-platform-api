@@ -51,7 +51,7 @@ class AppOauth2UserService(
         var user: LetsggUser
         try {
             user = userService.getByEmail(oAuth2UserInfo.getEmail())
-            if (user.authProvider != UserAuthProvider.valueOf(oAuth2UserRequest.clientRegistration.registrationId.toUpperCase())) {
+            if (user.authProvider != UserAuthProvider.valueOf(oAuth2UserRequest.clientRegistration.registrationId.uppercase())) {
                 throw OAuth2AuthenticationProcessingException(
                     "Looks like you're signed up with ${user.authProvider} account. Please use your ${user.authProvider} account to login."
                 )
@@ -59,7 +59,7 @@ class AppOauth2UserService(
         } catch (e: ResourceNotFoundException) {
             logger.info("registering new oauth user with email ${oAuth2UserInfo.getEmail()}")
             user = registerNewUser(
-                UserAuthProvider.valueOf(oAuth2UserRequest.clientRegistration.registrationId.toUpperCase()),
+                UserAuthProvider.valueOf(oAuth2UserRequest.clientRegistration.registrationId.uppercase()),
                 oAuth2UserInfo
             )
         }
@@ -68,7 +68,7 @@ class AppOauth2UserService(
 
     //TODO. consider what fields to include
     private fun registerNewUser(oauth2Provider: UserAuthProvider, oAuth2UserInfo: OAuth2UserInfo): LetsggUser {
-        val user = userMapper.toEntity(oAuth2UserInfo, oauth2Provider)
+        val user = userMapper.convert(oAuth2UserInfo, oauth2Provider)
         return userService.save(user)
     }
 }

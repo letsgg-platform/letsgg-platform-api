@@ -1,13 +1,16 @@
 package net.letsgg.platform.api.resource
 
+import com.fasterxml.jackson.annotation.JsonView
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
-import net.letsgg.platform.api.dto.AppUserResponseDto
+import net.letsgg.platform.api.dto.UserDto
 import net.letsgg.platform.api.dto.UserFinishSetupModel
 import net.letsgg.platform.api.mapper.LetsggUserMapper
+import net.letsgg.platform.api.view.Views
+import net.letsgg.platform.api.view.Views.Response
 import net.letsgg.platform.exception.handler.ApiError
 import net.letsgg.platform.security.CurrentUser
 import net.letsgg.platform.security.Preauthorized
@@ -37,7 +40,7 @@ class UserInfoResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = AppUserResponseDto::class)
+            schema = Schema(implementation = UserDto::class)
           )
         ]
       ),
@@ -54,9 +57,10 @@ class UserInfoResource(
   )
   @GetMapping("/me")
   @PreAuthorize(Preauthorized.WITH_AUTHORITY_USER_INFO)
-  fun getCurrentUser(@CurrentUser email: String): ResponseEntity<AppUserResponseDto> {
+  @JsonView(Response::class)
+  fun getCurrentUser(@CurrentUser email: String): ResponseEntity<UserDto> {
     val user = userService.getByEmail(email)
-    return ResponseEntity(userMapper.toDto(user), HttpStatus.OK)
+    return ResponseEntity(userMapper.convert(user), HttpStatus.OK)
   }
 
   @RestController

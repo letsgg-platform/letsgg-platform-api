@@ -10,7 +10,7 @@ class OauthTokenInfoMapper(
   private val jwtTokenUtilService: JwtTokenUtilService
 ) {
 
-  fun toDto(source: OauthTokenInfo): OauthTokenInfoDto {
+  fun convert(source: OauthTokenInfo): OauthTokenInfoDto {
     val (expiresInMs, refreshTokenExpiresInMs) = getAccessAndRefreshTokenExpirationInMs(
       source.accessToken,
       source.refreshToken

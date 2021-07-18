@@ -1,6 +1,6 @@
 package net.letsgg.platform.service.user
 
-import net.letsgg.platform.api.dto.AppUserRequestDto
+import net.letsgg.platform.api.dto.UserDto
 import net.letsgg.platform.entity.LetsggUser
 import net.letsgg.platform.exception.InvalidResetPasswordTokenException
 import net.letsgg.platform.exception.ResourceNotFoundException
@@ -77,7 +77,7 @@ class CoreAppUserService(
     userRepository.deleteById(id)
   }
 
-  override fun update(updatedUser: AppUserRequestDto, id: UUID): LetsggUser {
+  override fun update(updatedUser: UserDto, id: UUID): LetsggUser {
     logger.debug("updating user w/ id: {}", id)
     val user2Upd = userRepository.findById(id).orElseThrow {
       logger.error(String.format(ENTITY_NOT_EXISTS, "id", id.toString()))
@@ -86,7 +86,7 @@ class CoreAppUserService(
     return save(updUserFields(updatedUser, user2Upd))
   }
 
-  private fun updUserFields(updatedUser: AppUserRequestDto, user2Upd: LetsggUser) = user2Upd.apply {
+  private fun updUserFields(updatedUser: UserDto, user2Upd: LetsggUser) = user2Upd.apply {
     name = updatedUser.fullName
     email = updatedUser.email
   }
