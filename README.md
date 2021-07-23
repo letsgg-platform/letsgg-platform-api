@@ -1,26 +1,50 @@
-# letsgg-platform-api ![Build and Test](https://github.com/letsgg-platform/letsgg-platform-api/workflows/Build%20and%20Test/badge.svg?branch=main)
-Backend API for let'sGG Platform 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/19668606/126791551-18894842-2c19-4ffb-986b-6a7495529adb.png" alt="logo" />
+</p>
 
-## Requirements
-- **JDK >= 1.8**
-- **Maven >= 3.6.3**
-- **MongoDB >= 4.4**
-
-## Build
-
-```bash
-mvn clean package -DskipTests
-```
-
-## Run
+# Let'sGG Platform API ![Build and Test Pipeline](https://github.com/letsgg-platform/letsgg-platform-api/workflows/Build%20and%20Test/badge.svg?branch=main)
+## Prerequisites
+- [JDK](https://www.oracle.com/java/technologies/javase-downloads.html) **>= 1.8**
+- [Maven](https://maven.apache.org/download.cgi) **>= 3.6.3**
+- [PostgreSQL](https://www.postgresql.org/download/) **>= 13**
+---
+## Quick Local Startup
+To bootstrap with the default profile/env variables
 ```bash
 mvn spring-boot:run
 ```
+Alternatively, you may want to bootstrap with specific profile:
+- **dev** (default)
+- **production**
+- **test**
+<br/>
 
-## Test
+To run app w/ any profile besides default one, just add ```-P<profile>``` flag; e.g.:
+```bash
+mvn spring-boot:run -Pproduction
+```
+---
+
+### Used Environment Variables
+- datasource-host
+- datasource-username
+- datasource-password
+- oauth-github-client-id
+- oauth-github-client-secret
+- oauth-google-client-id
+- oauth-google-client-secret
+- jwt-secret
+- cors-allowed-origins
+- test_email
+- test_email_pwd
+
+## Running Tests
 ```bash
 mvn clean verify
 ```
+_Notes: Runs tests w/ **test** profile_
+
+---
 ## Contacts
-- email: romantupss@gmail.com
+- email: romantupis at gmail dot com
 - telegram: [@romm1](https://t.me/romm1)
