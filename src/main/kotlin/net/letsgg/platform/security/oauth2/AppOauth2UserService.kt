@@ -6,7 +6,7 @@ import net.letsgg.platform.entity.type.AuthProvider
 import net.letsgg.platform.exception.OAuth2AuthenticationProcessingException
 import net.letsgg.platform.exception.ResourceNotFoundException
 import net.letsgg.platform.security.AppUserDetails
-import net.letsgg.platform.service.user.AppUserService
+import net.letsgg.platform.service.user.UserService
 import net.letsgg.platform.utility.LoggerDelegate
 import org.springframework.security.authentication.InternalAuthenticationServiceException
 import org.springframework.security.core.AuthenticationException
@@ -23,8 +23,8 @@ import org.springframework.stereotype.Service
 @Service
 //@Transactional(noRollbackFor = [ResourceNotFoundException::class])
 class AppOauth2UserService(
-    private val userService: AppUserService,
-    private val userMapper: LetsggUserMapper,
+  private val userService: UserService,
+  private val userMapper: LetsggUserMapper,
 ) : DefaultOAuth2UserService() {
 
     private val logger by LoggerDelegate()
@@ -67,7 +67,6 @@ class AppOauth2UserService(
         return AppUserDetails(user, oAuth2User.attributes)
     }
 
-    //TODO. consider what fields to include
     private fun registerNewUser(oauth2Provider: AuthProvider, oAuth2UserInfo: OAuth2UserInfo): LetsggUser {
         val user = userMapper.convert(oAuth2UserInfo, oauth2Provider)
         return userService.save(user)

@@ -7,7 +7,7 @@ import net.letsgg.platform.api.mapper.LetsggUserMapper
 import net.letsgg.platform.exception.EmailAlreadyInUseException
 import net.letsgg.platform.exception.InvalidLoginCredentialsException
 import net.letsgg.platform.security.jwt.AuthorizationTokenService
-import net.letsgg.platform.service.user.AppUserService
+import net.letsgg.platform.service.user.UserService
 import net.letsgg.platform.utility.EMAIL_ALREADY_USED
 import net.letsgg.platform.utility.INVALID_LOGIN_CREDENTIALS
 import net.letsgg.platform.utility.LoggerDelegate
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class CoreUserAuthService(
   private val authenticationManager: AuthenticationManager,
-  private val userService: AppUserService,
+  private val userService: UserService,
   private val userMapper: LetsggUserMapper,
   private val authorizationTokenService: AuthorizationTokenService,
 ) : UserAuthService {

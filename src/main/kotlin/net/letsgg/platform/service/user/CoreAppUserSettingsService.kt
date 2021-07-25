@@ -18,7 +18,7 @@ import org.thymeleaf.spring5.expression.ThymeleafEvaluationContext
 @Transactional
 class CoreAppUserSettingsService(
   private val passwordResetTokenRepository: PasswordResetTokenRepository,
-  private val userService: AppUserService,
+  private val userService: UserService,
   private val passwordEncoder: PasswordEncoder,
   private val emailSenderService: EmailSenderService,
   private val templateEngine: TemplateEngine,
