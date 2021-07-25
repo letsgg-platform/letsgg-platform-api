@@ -22,56 +22,54 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-
 @RestController
 @RequestMapping("api/user-info")
 class UserInfoResource(
-  private val userService: UserService,
-  private val userMapper: LetsggUserMapper,
+    private val userService: UserService,
+    private val userMapper: LetsggUserMapper,
 ) {
 
-
-  @Operation(summary = "Get Currently Logged-In User")
-  @ApiResponses(
-    value = [
-      ApiResponse(
-        responseCode = "200",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = UserDto::class)
-          )
+    @Operation(summary = "Get Currently Logged-In User")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = UserDto::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Login Required",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiError::class)
+                    )
+                ]
+            )
         ]
-      ),
-      ApiResponse(
-        responseCode = "401", description = "Login Required",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = ApiError::class)
-          )
-        ]
-      )
-    ]
-  )
-  @GetMapping("/me")
-  @PreAuthorize(Preauthorized.WITH_AUTHORITY_USER_INFO)
-  @JsonView(Response::class)
-  fun getCurrentUser(@CurrentUser email: String): ResponseEntity<UserDto> {
-    val user = userService.getByEmail(email)
-    return ResponseEntity(userMapper.convert(user), HttpStatus.OK)
-  }
-
-  @RestController
-  @RequestMapping("api/user-info/finish-setup")
-  @PreAuthorize(Preauthorized.WITH_ROLE_UNFINISHED_SETUP_USER)
-  internal class UserFinishSetupController(
-    private val userService: UserService
-  ) {
-
-    fun finishSetup(@CurrentUser userEmail: String, @RequestBody finishSetupBody: UserFinishSetupModel) {
-      //update user fields with {@code finishSetupBody} ones. also do not forget to change {@code user_role}
-      TODO()
+    )
+    @GetMapping("/me")
+    @PreAuthorize(Preauthorized.WITH_AUTHORITY_USER_INFO)
+    @JsonView(Response::class)
+    fun getCurrentUser(@CurrentUser email: String): ResponseEntity<UserDto> {
+        val user = userService.getByEmail(email)
+        return ResponseEntity(userMapper.convert(user), HttpStatus.OK)
     }
-  }
+
+    @RestController
+    @RequestMapping("api/user-info/finish-setup")
+    @PreAuthorize(Preauthorized.WITH_ROLE_UNFINISHED_SETUP_USER)
+    internal class UserFinishSetupController(
+        private val userService: UserService
+    ) {
+
+        fun finishSetup(@CurrentUser userEmail: String, @RequestBody finishSetupBody: UserFinishSetupModel) {
+            // update user fields with {@code finishSetupBody} ones. also do not forget to change {@code user_role}
+            TODO()
+        }
+    }
 }

@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("test")
 class TestResource {
 
-
-  @GetMapping
-  @PreAuthorize(Preauthorized.WITH_AUTHORITY_READ)
-  fun testEndpoint() = "test"
+    @GetMapping
+    @PreAuthorize(Preauthorized.WITH_AUTHORITY_READ)
+    fun testEndpoint() = "test"
 }

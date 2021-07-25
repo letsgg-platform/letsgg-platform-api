@@ -1,7 +1,7 @@
 package net.letsgg.platform.security.oauth2
 
-import net.letsgg.platform.exception.OAuth2AuthenticationProcessingException
 import net.letsgg.platform.entity.type.AuthProvider.*
+import net.letsgg.platform.exception.OAuth2AuthenticationProcessingException
 
 object Oauth2UserInfoFactory {
 

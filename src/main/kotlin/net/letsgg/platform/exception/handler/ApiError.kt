@@ -16,8 +16,8 @@ data class ApiError(
     val path: String,
     val timestamp: Instant = Instant.now()
 ) {
-  @get:JsonProperty("code")
-  val statusCode: Int = httpStatus.value()
+    @get:JsonProperty("code")
+    val statusCode: Int = httpStatus.value()
 
-  var errors: Any? = null
+    var errors: Any? = null
 }

@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated
 import java.util.*
 import javax.validation.constraints.Email
 
-
 @Service
 @Transactional
 @Validated

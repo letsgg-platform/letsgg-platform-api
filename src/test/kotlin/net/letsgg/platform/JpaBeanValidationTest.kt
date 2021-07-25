@@ -14,13 +14,12 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.transaction.TransactionSystemException
 
-
 @ActiveProfiles("test")
 @ExtendWith(value = [SpringExtension::class])
 @Import(value = [IntegrationTestsConfiguration::class])
 @SpringBootTest
 class JpaBeanValidationTest(
-  @Autowired private val emailEntryRepository: EmailEntryRepository
+    @Autowired private val emailEntryRepository: EmailEntryRepository
 ) {
     @MockBean
     lateinit var newsletterSubscribeServiceFacade: NewsletterSubscribeServiceFacade
@@ -30,7 +29,7 @@ class JpaBeanValidationTest(
         val objectToValidate = EmailEntry("testtest")
 
         assertThrows<TransactionSystemException> {
-          emailEntryRepository.save(objectToValidate)
+            emailEntryRepository.save(objectToValidate)
         }
     }
 }

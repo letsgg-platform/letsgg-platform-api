@@ -9,15 +9,15 @@ import java.time.Instant
 @Service
 @Transactional
 class AppTokenService(
-  private val resetTokenRepository: PasswordResetTokenRepository,
+    private val resetTokenRepository: PasswordResetTokenRepository,
 ) {
 
-  fun validateResetPasswordToken(token: String) {
-    val persistedToken =
-      resetTokenRepository.findByToken(token).orElseThrow { throw InvalidResetPasswordTokenException() }
+    fun validateResetPasswordToken(token: String) {
+        val persistedToken =
+            resetTokenRepository.findByToken(token).orElseThrow { throw InvalidResetPasswordTokenException() }
 
-    if (persistedToken.expireDate.isBefore(Instant.now())) {
-      throw InvalidResetPasswordTokenException("token expired")
+        if (persistedToken.expireDate.isBefore(Instant.now())) {
+            throw InvalidResetPasswordTokenException("token expired")
+        }
     }
-  }
 }

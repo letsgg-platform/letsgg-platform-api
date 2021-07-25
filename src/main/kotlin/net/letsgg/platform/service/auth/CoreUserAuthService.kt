@@ -18,50 +18,49 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-
 @Service
 @Transactional
 class CoreUserAuthService(
-  private val authenticationManager: AuthenticationManager,
-  private val userService: UserService,
-  private val userMapper: LetsggUserMapper,
-  private val authorizationTokenService: AuthorizationTokenService,
+    private val authenticationManager: AuthenticationManager,
+    private val userService: UserService,
+    private val userMapper: LetsggUserMapper,
+    private val authorizationTokenService: AuthorizationTokenService,
 ) : UserAuthService {
-  private val logger by LoggerDelegate()
+    private val logger by LoggerDelegate()
 
-  override fun login(loginRequest: LoginRequest): OauthTokenInfoDto {
-    val authentication = try {
-      attemptAuthentication(loginRequest)
-    } catch (ex: AuthenticationException) {
-      logger.error(String.format(INVALID_LOGIN_CREDENTIALS, ex.localizedMessage), ex)
-      throw InvalidLoginCredentialsException(INVALID_LOGIN_CREDENTIALS, ex)
+    override fun login(loginRequest: LoginRequest): OauthTokenInfoDto {
+        val authentication = try {
+            attemptAuthentication(loginRequest)
+        } catch (ex: AuthenticationException) {
+            logger.error(String.format(INVALID_LOGIN_CREDENTIALS, ex.localizedMessage), ex)
+            throw InvalidLoginCredentialsException(INVALID_LOGIN_CREDENTIALS, ex)
+        }
+        return authorizationTokenService.createToken(authentication)
     }
-    return authorizationTokenService.createToken(authentication)
-  }
 
-  override fun register(userDto: UserDto): OauthTokenInfoDto {
-    if (userService.existsByEmail(userDto.email)) {
-      logger.error(String.format(EMAIL_ALREADY_USED, userDto.email))
-      throw EmailAlreadyInUseException(String.format(EMAIL_ALREADY_USED, userDto.email))
+    override fun register(userDto: UserDto): OauthTokenInfoDto {
+        if (userService.existsByEmail(userDto.email)) {
+            logger.error(String.format(EMAIL_ALREADY_USED, userDto.email))
+            throw EmailAlreadyInUseException(String.format(EMAIL_ALREADY_USED, userDto.email))
+        }
+        userService.save(userMapper.convert(userDto))
+
+        val authentication = attemptAuthentication(
+            LoginRequest(userDto.email, userDto.password!!)
+        )
+        return authorizationTokenService.createToken(authentication)
     }
-    userService.save(userMapper.convert(userDto))
 
-    val authentication = attemptAuthentication(
-      LoginRequest(userDto.email, userDto.password!!)
-    )
-    return authorizationTokenService.createToken(authentication)
-  }
+    @Throws(AuthenticationException::class)
+    private fun attemptAuthentication(loginRequest: LoginRequest): Authentication {
+        val authentication = UsernamePasswordAuthenticationToken(
+            loginRequest.email, loginRequest.password
+        )
+        return authenticationManager.authenticate(authentication)
+    }
 
-  @Throws(AuthenticationException::class)
-  private fun attemptAuthentication(loginRequest: LoginRequest): Authentication {
-    val authentication = UsernamePasswordAuthenticationToken(
-      loginRequest.email, loginRequest.password
-    )
-    return authenticationManager.authenticate(authentication)
-  }
-
-  //FIXME set in cookies instead
-  fun refreshToken(authentication: Authentication): OauthTokenInfoDto {
-    return authorizationTokenService.createToken(authentication)
-  }
+    // FIXME set in cookies instead
+    fun refreshToken(authentication: Authentication): OauthTokenInfoDto {
+        return authorizationTokenService.createToken(authentication)
+    }
 }

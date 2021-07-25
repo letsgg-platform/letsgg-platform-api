@@ -5,6 +5,6 @@ import net.letsgg.platform.security.oauth2.OauthTokenInfo
 import org.springframework.security.core.Authentication
 
 interface AuthorizationTokenService {
-  fun createAuthorizationOauthTokenInfo(authentication: Authentication): OauthTokenInfo
-  fun createToken(authentication: Authentication): OauthTokenInfoDto
+    fun createAuthorizationOauthTokenInfo(authentication: Authentication): OauthTokenInfo
+    fun createToken(authentication: Authentication): OauthTokenInfoDto
 }

@@ -31,161 +31,158 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
-
 @RestController
 @RequestMapping("api/auth")
 @Validated
 class UserAuthResource(
-  private val userSettingsService: AppUserSettingsService,
-  private val userAuthService: CoreUserAuthService,
-  private val userMapper: LetsggUserMapper,
-  private val tokenService: AppTokenService
+    private val userSettingsService: AppUserSettingsService,
+    private val userAuthService: CoreUserAuthService,
+    private val userMapper: LetsggUserMapper,
+    private val tokenService: AppTokenService
 ) {
-  private val logger by LoggerDelegate()
-
-  @Operation(summary = "User Login")
-  @ApiResponses(
-    value = [
-      ApiResponse(
-        responseCode = "200", description = "Successful Login",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = OauthTokenInfoDto::class)
-          )
-        ]
-      ),
-      ApiResponse(
-        responseCode = "401", description = "Invalid Credentials Supplied",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = ApiError::class)
-          )
-        ]
-      )
-    ]
-  )
-  @PostMapping("/login")
-  fun loginUser(
-    @RequestBody loginRequest: LoginRequest,
-    response: HttpServletResponse
-  ): ResponseEntity<OauthTokenInfoDto> {
-    logger.debug("logging in ${loginRequest.email}")
-    val oauthTokenInfo = userAuthService.login(loginRequest)
-    CookieUtils.setAuthCookies(oauthTokenInfo, response)
-    return ResponseEntity(oauthTokenInfo, HttpStatus.OK)
-  }
-
-  @Operation(summary = "User Register")
-  @ApiResponses(
-    value = [
-      ApiResponse(
-        responseCode = "201", description = "User Created",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = OauthTokenInfoDto::class)
-          )
-        ]
-      ),
-      ApiResponse(
-        responseCode = "406", description = "Validation Failed For Supplied Fields",
-        content = [
-          Content(
-            mediaType = "application/json",
-            schema = Schema(implementation = ApiError::class)
-          )
-        ]
-      )
-    ]
-  )
-  @PostMapping("/register")
-  fun signUp(
-    @JsonView(Views.Request::class) @RequestBody @Valid userDto: UserDto,
-    response: HttpServletResponse
-  ): ResponseEntity<OauthTokenInfoDto> {
-    logger.debug("signing up user w/ email ${userDto.email}")
-    val oauthTokenInfo = userAuthService.register(userDto)
-    CookieUtils.setAuthCookies(oauthTokenInfo, response)
-    return ResponseEntity(oauthTokenInfo, HttpStatus.CREATED)
-  }
-
-  @PostMapping("/reset-password-request")
-  fun resetPassword(@RequestParam email: String): ResponseEntity<Unit> {
-    userSettingsService.resetPassword(email)
-    return ResponseEntity(Unit, HttpStatus.OK)
-  }
-
-  @PostMapping("/refresh-token")
-//    @PreAuthorize("isAuthenticated()")
-  fun refreshToken(authentication: Authentication): ResponseEntity<OauthTokenInfoDto> { //FIXME, read refresh_token, not security context.
-    return ResponseEntity(userAuthService.refreshToken(authentication), HttpStatus.OK)
-  }
-
-
-  @RestController
-  @RequestMapping("api/oauth2")
-  internal class UserOauth2Controller(
-    private val oauthTokenService: OauthTokenService,
-    private val oauthTokenInfoMapper: OauthTokenInfoMapper
-  ) {
-
     private val logger by LoggerDelegate()
 
-    @PostMapping("/token")
-    fun getAccessToken(
-      @RequestParam("code") authorizationCode: String,
-      request: HttpServletRequest,
-      response: HttpServletResponse
+    @Operation(summary = "User Login")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Successful Login",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = OauthTokenInfoDto::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Invalid Credentials Supplied",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiError::class)
+                    )
+                ]
+            )
+        ]
+    )
+    @PostMapping("/login")
+    fun loginUser(
+        @RequestBody loginRequest: LoginRequest,
+        response: HttpServletResponse
     ): ResponseEntity<OauthTokenInfoDto> {
-      logger.debug("getting oauth access token with code {}", authorizationCode)
-      val oauthTokenInfo =
-        oauthTokenService.getTokenByAuthorizationCode(authorizationCode, request)
-      oauthTokenInfo.id?.let {
-        oauthTokenService.deleteById(it)
-      }
-      val oauthTokenInfoDto = oauthTokenInfoMapper.convert(oauthTokenInfo)
-      CookieUtils.setAuthCookies(oauthTokenInfoDto, response)
-      return ResponseEntity(oauthTokenInfoDto, HttpStatus.OK)
-    }
-  }
-
-  @Controller
-  @RequestMapping("/api/auth")
-  internal class UserForgotPassResource(
-    private val userSettingsService: AppUserSettingsService,
-    private val tokenService: AppTokenService
-  ) {
-
-    @GetMapping("/reset-password")
-    fun showChangePasswordPage(@RequestParam token: String, model: Model): String {
-      return try {
-        tokenService.validateResetPasswordToken(token)
-        model.addAttribute(ChangePasswordRequest())
-        "reset-password"
-      } catch (ex: InvalidResetPasswordTokenException) {
-        "redirect:/"
-      }
+        logger.debug("logging in ${loginRequest.email}")
+        val oauthTokenInfo = userAuthService.login(loginRequest)
+        CookieUtils.setAuthCookies(oauthTokenInfo, response)
+        return ResponseEntity(oauthTokenInfo, HttpStatus.OK)
     }
 
-    @PostMapping("/update-password")
-    fun updatePassword(
-      @RequestParam token: String,
-      @ModelAttribute changePasswordRequest: ChangePasswordRequest
-    ): String {
-      return try {
-        tokenService.validateResetPasswordToken(token)
-        userSettingsService.changeUserPassword(requireNotNull(changePasswordRequest.newPassword), token)
-        "redirect:/"
-      } catch (ex: InvalidResetPasswordTokenException) {
-        "redirect:/login"
-      }
+    @Operation(summary = "User Register")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201", description = "User Created",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = OauthTokenInfoDto::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "406", description = "Validation Failed For Supplied Fields",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiError::class)
+                    )
+                ]
+            )
+        ]
+    )
+    @PostMapping("/register")
+    fun signUp(
+        @JsonView(Views.Request::class) @RequestBody @Valid userDto: UserDto,
+        response: HttpServletResponse
+    ): ResponseEntity<OauthTokenInfoDto> {
+        logger.debug("signing up user w/ email ${userDto.email}")
+        val oauthTokenInfo = userAuthService.register(userDto)
+        CookieUtils.setAuthCookies(oauthTokenInfo, response)
+        return ResponseEntity(oauthTokenInfo, HttpStatus.CREATED)
     }
 
-    class ChangePasswordRequest {
-      var newPassword: String? = null
+    @PostMapping("/reset-password-request")
+    fun resetPassword(@RequestParam email: String): ResponseEntity<Unit> {
+        userSettingsService.resetPassword(email)
+        return ResponseEntity(Unit, HttpStatus.OK)
     }
 
-  }
+    @PostMapping("/refresh-token")
+//    @PreAuthorize("isAuthenticated()")
+    fun refreshToken(authentication: Authentication): ResponseEntity<OauthTokenInfoDto> { // FIXME, read refresh_token, not security context.
+        return ResponseEntity(userAuthService.refreshToken(authentication), HttpStatus.OK)
+    }
+
+    @RestController
+    @RequestMapping("api/oauth2")
+    internal class UserOauth2Controller(
+        private val oauthTokenService: OauthTokenService,
+        private val oauthTokenInfoMapper: OauthTokenInfoMapper
+    ) {
+
+        private val logger by LoggerDelegate()
+
+        @PostMapping("/token")
+        fun getAccessToken(
+            @RequestParam("code") authorizationCode: String,
+            request: HttpServletRequest,
+            response: HttpServletResponse
+        ): ResponseEntity<OauthTokenInfoDto> {
+            logger.debug("getting oauth access token with code {}", authorizationCode)
+            val oauthTokenInfo =
+                oauthTokenService.getTokenByAuthorizationCode(authorizationCode, request)
+            oauthTokenInfo.id?.let {
+                oauthTokenService.deleteById(it)
+            }
+            val oauthTokenInfoDto = oauthTokenInfoMapper.convert(oauthTokenInfo)
+            CookieUtils.setAuthCookies(oauthTokenInfoDto, response)
+            return ResponseEntity(oauthTokenInfoDto, HttpStatus.OK)
+        }
+    }
+
+    @Controller
+    @RequestMapping("/api/auth")
+    internal class UserForgotPassResource(
+        private val userSettingsService: AppUserSettingsService,
+        private val tokenService: AppTokenService
+    ) {
+
+        @GetMapping("/reset-password")
+        fun showChangePasswordPage(@RequestParam token: String, model: Model): String {
+            return try {
+                tokenService.validateResetPasswordToken(token)
+                model.addAttribute(ChangePasswordRequest())
+                "reset-password"
+            } catch (ex: InvalidResetPasswordTokenException) {
+                "redirect:/"
+            }
+        }
+
+        @PostMapping("/update-password")
+        fun updatePassword(
+            @RequestParam token: String,
+            @ModelAttribute changePasswordRequest: ChangePasswordRequest
+        ): String {
+            return try {
+                tokenService.validateResetPasswordToken(token)
+                userSettingsService.changeUserPassword(requireNotNull(changePasswordRequest.newPassword), token)
+                "redirect:/"
+            } catch (ex: InvalidResetPasswordTokenException) {
+                "redirect:/login"
+            }
+        }
+
+        class ChangePasswordRequest {
+            var newPassword: String? = null
+        }
+    }
 }

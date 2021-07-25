@@ -12,27 +12,27 @@ import javax.servlet.http.HttpServletRequest
 @Service
 @Transactional
 class CoreOauthTokenService(
-  private val oauthTokenRepository: OauthTokenRepository,
+    private val oauthTokenRepository: OauthTokenRepository,
 ) : OauthTokenService {
 
-  @Transactional(readOnly = true)
-  override fun getTokenByAuthorizationCode(authorizationCode: String, request: HttpServletRequest): OauthTokenInfo {
-    return oauthTokenRepository.findByAuthorizationCode(authorizationCode).orElseThrow {
-      OAuth2AuthorizationException(
-        OAuth2Error(
-          "401",
-          "Cannot proceed authentication - Invalid authorization code",
-          request.requestURI
-        )
-      )
+    @Transactional(readOnly = true)
+    override fun getTokenByAuthorizationCode(authorizationCode: String, request: HttpServletRequest): OauthTokenInfo {
+        return oauthTokenRepository.findByAuthorizationCode(authorizationCode).orElseThrow {
+            OAuth2AuthorizationException(
+                OAuth2Error(
+                    "401",
+                    "Cannot proceed authentication - Invalid authorization code",
+                    request.requestURI
+                )
+            )
+        }
     }
-  }
 
-  override fun deleteById(id: UUID) {
-    oauthTokenRepository.deleteById(id)
-  }
+    override fun deleteById(id: UUID) {
+        oauthTokenRepository.deleteById(id)
+    }
 
-  override fun save(oauthTokenInfo: OauthTokenInfo): OauthTokenInfo {
-    return oauthTokenRepository.save(oauthTokenInfo)
-  }
+    override fun save(oauthTokenInfo: OauthTokenInfo): OauthTokenInfo {
+        return oauthTokenRepository.save(oauthTokenInfo)
+    }
 }
