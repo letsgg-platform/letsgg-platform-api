@@ -21,6 +21,10 @@
         <openapi.version>1.5.9</openapi.version>
         <jwt.version>3.12.0</jwt.version>
         <commons-validator.version>1.7</commons-validator.version>
+        <datasource-jdbc-url>jdbc:postgresql://localhost:5433/letsgg</datasource-jdbc-url>
+        <datasource-username>postgres</datasource-username>
+        <datasource-password></datasource-password>
+        <liquibase-context>dev</liquibase-context>
     </properties>
 
     <dependencies>
@@ -105,6 +109,11 @@
 
         <!-- libs and dependencies -->
         <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.4.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${openapi.version}</version>
@@ -175,6 +184,54 @@
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                    <includes>
+                                        <include>net.letsgg.platform.service.**</include>
+                                    </includes>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.4.1</version>
+                <configuration>
+                    <changeLogFile>src/main/resources/db/changelog-master.xml</changeLogFile>
+                    <url>${datasource-jdbc-url}</url>
+                    <username>${datasource-username}</username>
+                    <password>${datasource-password}</password>
+                    <contexts>${liquibase-context}</contexts>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
