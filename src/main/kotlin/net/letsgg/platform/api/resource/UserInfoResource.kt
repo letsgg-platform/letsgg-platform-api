@@ -9,12 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import net.letsgg.platform.api.dto.UserDto
 import net.letsgg.platform.api.dto.UserFinishSetupModel
 import net.letsgg.platform.api.mapper.LetsggUserMapper
-import net.letsgg.platform.api.view.Views
 import net.letsgg.platform.api.view.Views.Response
 import net.letsgg.platform.exception.handler.ApiError
 import net.letsgg.platform.security.CurrentUser
 import net.letsgg.platform.security.Preauthorized
-import net.letsgg.platform.service.user.AppUserService
+import net.letsgg.platform.service.user.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("api/user-info")
 class UserInfoResource(
-  private val userService: AppUserService,
+  private val userService: UserService,
   private val userMapper: LetsggUserMapper,
 ) {
 
@@ -67,7 +66,7 @@ class UserInfoResource(
   @RequestMapping("api/user-info/finish-setup")
   @PreAuthorize(Preauthorized.WITH_ROLE_UNFINISHED_SETUP_USER)
   internal class UserFinishSetupController(
-    private val userService: AppUserService
+    private val userService: UserService
   ) {
 
     fun finishSetup(@CurrentUser userEmail: String, @RequestBody finishSetupBody: UserFinishSetupModel) {

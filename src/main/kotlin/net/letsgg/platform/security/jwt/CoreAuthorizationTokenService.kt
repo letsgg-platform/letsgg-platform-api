@@ -5,13 +5,13 @@ import net.letsgg.platform.config.AuthProperties
 import net.letsgg.platform.security.TokenType
 import net.letsgg.platform.security.oauth2.OauthTokenInfo
 import net.letsgg.platform.service.auth.token.JwtTokenUtilService
-import net.letsgg.platform.service.user.AppUserService
+import net.letsgg.platform.service.user.UserService
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 
 @Component
 class CoreAuthorizationTokenService(
-  private val userService: AppUserService,
+  private val userService: UserService,
   private val authProperties: AuthProperties
 ) : AuthorizationTokenService, JwtTokenUtilService {
 
