@@ -1,7 +1,8 @@
 package net.letsgg.platform.entity
 
+import net.letsgg.platform.entity.type.Gender
 import net.letsgg.platform.security.AppUserRole
-import net.letsgg.platform.security.oauth2.UserAuthProvider
+import net.letsgg.platform.entity.type.AuthProvider
 import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
@@ -16,19 +17,19 @@ import javax.validation.constraints.Size
     ]
 )
 class LetsggUser(
-    var name: String? = null,
-    @field:Size(min = 3, max = 12) var username: String,
-    @field:Email var email: String,
-    @Enumerated(EnumType.STRING)
+        var name: String? = null,
+        @field:Size(min = 3, max = 12) var username: String,
+        @field:Email var email: String,
+        @Enumerated(EnumType.STRING)
     var gender: Gender = Gender.UNDEFINED,
-    var passwordHash: String,
-    @Enumerated(EnumType.STRING)
+        var passwordHash: String,
+        @Enumerated(EnumType.STRING)
     var userRole: AppUserRole = AppUserRole.UNFINISHED_SETUP_USER,
-    @Enumerated(EnumType.STRING)
-    val authProvider: UserAuthProvider,
-    val authProviderId: String,
-    val hasFinishedSetup: Boolean = false,
-    val isEmailVerified: Boolean = false,
+        @Enumerated(EnumType.STRING)
+    val authProvider: AuthProvider,
+        val authProviderId: String,
+        val hasFinishedSetup: Boolean = false,
+        val isEmailVerified: Boolean = false,
 ) : AbstractJpaPersistable<UUID>() {
 
     @field:Past
