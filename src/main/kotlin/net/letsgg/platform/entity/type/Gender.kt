@@ -1,4 +1,4 @@
-package net.letsgg.platform.entity
+package net.letsgg.platform.entity.type
 
 enum class Gender {
   MALE,

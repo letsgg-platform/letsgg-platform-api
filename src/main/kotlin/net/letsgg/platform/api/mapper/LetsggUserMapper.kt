@@ -4,8 +4,8 @@ import net.bytebuddy.utility.RandomString
 import net.letsgg.platform.api.dto.UserDto
 import net.letsgg.platform.entity.LetsggUser
 import net.letsgg.platform.security.oauth2.OAuth2UserInfo
-import net.letsgg.platform.security.oauth2.UserAuthProvider
-import net.letsgg.platform.security.oauth2.UserAuthProvider.LOCAL
+import net.letsgg.platform.entity.type.AuthProvider
+import net.letsgg.platform.entity.type.AuthProvider.LOCAL
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
@@ -36,7 +36,7 @@ class LetsggUserMapper(
     )
   }
 
-  fun convert(oAuth2UserInfo: OAuth2UserInfo, oauth2Provider: UserAuthProvider): LetsggUser {
+  fun convert(oAuth2UserInfo: OAuth2UserInfo, oauth2Provider: AuthProvider): LetsggUser {
     return LetsggUser(
       name = oAuth2UserInfo.getName(),
       username = oAuth2UserInfo.getLogin(),
