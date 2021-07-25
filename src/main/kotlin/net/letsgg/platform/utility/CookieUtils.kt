@@ -8,7 +8,6 @@ import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
 object CookieUtils {
 
     private const val DEFAULT_COOKIE_DOMAIN = "letsgg.net"
@@ -85,8 +84,8 @@ object CookieUtils {
     }
 
     fun setAuthCookies(
-      oauthTokenInfo: OauthTokenInfoDto,
-      response: HttpServletResponse
+        oauthTokenInfo: OauthTokenInfoDto,
+        response: HttpServletResponse
     ) {
         addCookie(
             response,

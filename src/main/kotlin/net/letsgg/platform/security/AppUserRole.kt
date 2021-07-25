@@ -16,7 +16,7 @@ enum class AppUserRole(private val permissions: Set<AppUserPermission>) {
         permissions.add(SimpleGrantedAuthority("ROLE_$name"))
         return permissions
     }
-    
+
     override fun toString(): String {
         return "ROLE_${this.name}"
     }

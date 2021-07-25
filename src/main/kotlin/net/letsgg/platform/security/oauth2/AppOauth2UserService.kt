@@ -21,10 +21,10 @@ import org.springframework.stereotype.Service
  * of authorization code for access token.
  * */
 @Service
-//@Transactional(noRollbackFor = [ResourceNotFoundException::class])
+// @Transactional(noRollbackFor = [ResourceNotFoundException::class])
 class AppOauth2UserService(
-  private val userService: UserService,
-  private val userMapper: LetsggUserMapper,
+    private val userService: UserService,
+    private val userMapper: LetsggUserMapper,
 ) : DefaultOAuth2UserService() {
 
     private val logger by LoggerDelegate()

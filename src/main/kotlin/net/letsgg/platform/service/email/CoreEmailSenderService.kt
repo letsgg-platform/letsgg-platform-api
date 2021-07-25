@@ -18,8 +18,12 @@ class CoreEmailSenderService(
     override fun sendEmail(simpleMailMessage: SimpleMailMessage) = javaMailSender.send(simpleMailMessage)
 
     override fun sendEmailWithThymeleafTemplate(
-        content: String, thymeleafContext: Context, subject: String, targetEmail: String,
-        isHtml: Boolean, inlines: List<Pair<String, ClassPathResource>>
+        content: String,
+        thymeleafContext: Context,
+        subject: String,
+        targetEmail: String,
+        isHtml: Boolean,
+        inlines: List<Pair<String, ClassPathResource>>
     ) {
         val mimeMessage = javaMailSender.createMimeMessage()
         val mimeMessageHelper = MimeMessageHelper(mimeMessage, true, "UTF-8")

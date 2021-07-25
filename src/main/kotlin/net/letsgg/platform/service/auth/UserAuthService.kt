@@ -5,6 +5,6 @@ import net.letsgg.platform.api.dto.OauthTokenInfoDto
 import net.letsgg.platform.api.dto.UserDto
 
 interface UserAuthService {
-  fun login(loginRequest: LoginRequest): OauthTokenInfoDto
-  fun register(userDto: UserDto): OauthTokenInfoDto
+    fun login(loginRequest: LoginRequest): OauthTokenInfoDto
+    fun register(userDto: UserDto): OauthTokenInfoDto
 }

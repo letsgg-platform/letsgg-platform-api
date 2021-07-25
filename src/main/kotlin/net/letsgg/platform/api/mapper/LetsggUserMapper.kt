@@ -11,51 +11,51 @@ import org.springframework.stereotype.Component
 
 @Component
 class LetsggUserMapper(
-  private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder
 ) {
 
-  fun convert(entity: LetsggUser): UserDto {
-    return UserDto(
-      email = entity.email,
-      fullName = entity.name,
-      userName = entity.username,
-    ).apply {
-      hasFinishedSetup = entity.hasFinishedSetup
-      isEmailVerified = entity.isEmailVerified
+    fun convert(entity: LetsggUser): UserDto {
+        return UserDto(
+            email = entity.email,
+            fullName = entity.name,
+            userName = entity.username,
+        ).apply {
+            hasFinishedSetup = entity.hasFinishedSetup
+            isEmailVerified = entity.isEmailVerified
+        }
     }
-  }
 
-  fun convert(dto: UserDto): LetsggUser {
-    return LetsggUser(
-      name = dto.fullName,
-      username = dto.userName,
-      email = dto.email,
-      passwordHash = passwordEncoder.encode(dto.password),
-      authProvider = LOCAL,
-      authProviderId = LOCAL.providerId
-    )
-  }
-
-  //TODO. consider what fields to include
-  fun convert(oAuth2UserInfo: OAuth2UserInfo, oauth2Provider: AuthProvider): LetsggUser {
-    return LetsggUser(
-      name = oAuth2UserInfo.getName(),
-      username = oAuth2UserInfo.getLogin(),
-      email = oAuth2UserInfo.getEmail(),
-      passwordHash = passwordEncoder.encode(RandomStringUtils.randomAlphanumeric(32)),
-      authProvider = oauth2Provider,
-      authProviderId = oAuth2UserInfo.getId()
-    ).apply {
-      imageUrl = oAuth2UserInfo.getImageUrl()
+    fun convert(dto: UserDto): LetsggUser {
+        return LetsggUser(
+            name = dto.fullName,
+            username = dto.userName,
+            email = dto.email,
+            passwordHash = passwordEncoder.encode(dto.password),
+            authProvider = LOCAL,
+            authProviderId = LOCAL.providerId
+        )
     }
-  }
 
-  fun update(source: LetsggUser, target: LetsggUser) = target.apply {
-    name = source.name
-    email = source.email
-    birthdayDate = source.birthdayDate
-    gender = source.gender
-    imageUrl = source.imageUrl
-    spokenLanguages = source.spokenLanguages
-  }
+    // TODO. consider what fields to include
+    fun convert(oAuth2UserInfo: OAuth2UserInfo, oauth2Provider: AuthProvider): LetsggUser {
+        return LetsggUser(
+            name = oAuth2UserInfo.getName(),
+            username = oAuth2UserInfo.getLogin(),
+            email = oAuth2UserInfo.getEmail(),
+            passwordHash = passwordEncoder.encode(RandomStringUtils.randomAlphanumeric(32)),
+            authProvider = oauth2Provider,
+            authProviderId = oAuth2UserInfo.getId()
+        ).apply {
+            imageUrl = oAuth2UserInfo.getImageUrl()
+        }
+    }
+
+    fun update(source: LetsggUser, target: LetsggUser) = target.apply {
+        name = source.name
+        email = source.email
+        birthdayDate = source.birthdayDate
+        gender = source.gender
+        imageUrl = source.imageUrl
+        spokenLanguages = source.spokenLanguages
+    }
 }

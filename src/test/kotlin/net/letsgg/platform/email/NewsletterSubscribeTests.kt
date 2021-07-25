@@ -18,29 +18,28 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import javax.validation.ConstraintViolationException
 
-
 @Import(value = [IntegrationTestsConfiguration::class])
 @ExtendWith(value = [SpringExtension::class])
 @ContextConfiguration(classes = [NewsletterSubscribeService::class])
 @ActiveProfiles("test")
 class NewsletterSubscribeTests {
 
-  @MockBean
-  private lateinit var emailEntryRepository: EmailEntryRepository
+    @MockBean
+    private lateinit var emailEntryRepository: EmailEntryRepository
 
-  @Autowired
-  private lateinit var newsletterSubscribeService: NewsletterSubscribeService
+    @Autowired
+    private lateinit var newsletterSubscribeService: NewsletterSubscribeService
 
-  @Test
-  fun throwsExceptionWhenNotValidEmail() {
-    assertThrows<ConstraintViolationException> {
-      newsletterSubscribeService.signUpForNewsFeed("test")
+    @Test
+    fun throwsExceptionWhenNotValidEmail() {
+        assertThrows<ConstraintViolationException> {
+            newsletterSubscribeService.signUpForNewsFeed("test")
+        }
     }
-  }
 
     @Test
     fun doesNotThrowWhenEmailIsValid() {
-      doReturn(EmailEntry("")).`when`(emailEntryRepository).save(any())
+        doReturn(EmailEntry("")).`when`(emailEntryRepository).save(any())
 
         assertDoesNotThrow {
             newsletterSubscribeService.signUpForNewsFeed("test@gmail.com")

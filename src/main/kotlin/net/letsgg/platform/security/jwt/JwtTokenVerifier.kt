@@ -56,7 +56,6 @@ class JwtTokenVerifier(
         }
     }
 
-
     private fun filterMobileRequest(
         request: HttpServletRequest,
         response: HttpServletResponse,

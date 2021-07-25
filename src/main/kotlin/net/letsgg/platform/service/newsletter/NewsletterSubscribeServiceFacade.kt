@@ -20,7 +20,6 @@ class NewsletterSubscribeServiceFacade(
     private val springTemplateEngine: SpringTemplateEngine,
     private val newsletterSubscribeService: NewsletterSubscribeService,
 ) {
-    
 
     @Value("\${thymeleaf.email.newsletter-unsubscribe.url}")
     lateinit var newsletterUnsubscribeUrl: String

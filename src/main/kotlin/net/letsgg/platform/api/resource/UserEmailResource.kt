@@ -15,16 +15,16 @@ import java.util.*
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @Deprecated(level = DeprecationLevel.WARNING, message = "Will be replaced by user email preferences")
 class UserEmailResource(
-  private val newsletterSubscribeServiceFacade: NewsletterSubscribeServiceFacade
+    private val newsletterSubscribeServiceFacade: NewsletterSubscribeServiceFacade
 ) {
-  @PostMapping("/newsletter-signup/{userEmail}")
-  fun subscribeForNewsletter(@PathVariable userEmail: String): ResponseEntity<Unit> {
-    newsletterSubscribeServiceFacade.signUpForNewsletterAndSendWelcomeMail(userEmail)
-    return ResponseEntity(HttpStatus.OK)
-  }
+    @PostMapping("/newsletter-signup/{userEmail}")
+    fun subscribeForNewsletter(@PathVariable userEmail: String): ResponseEntity<Unit> {
+        newsletterSubscribeServiceFacade.signUpForNewsletterAndSendWelcomeMail(userEmail)
+        return ResponseEntity(HttpStatus.OK)
+    }
 
-  @GetMapping("/newsletter-unsubscribe-{id}")
-  fun unsubscribeFromNewsletter(@PathVariable("id") emailEntryId: UUID): String {
+    @GetMapping("/newsletter-unsubscribe-{id}")
+    fun unsubscribeFromNewsletter(@PathVariable("id") emailEntryId: UUID): String {
         val messageOnSuccessfulUnsubscribe = "Unsubscribed."
         newsletterSubscribeServiceFacade.unsubscribeFromNewsletterAndSendByeMail(emailEntryId)
         return messageOnSuccessfulUnsubscribe

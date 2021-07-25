@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AppUserDetailsService(
-  private val userService: UserService,
+    private val userService: UserService,
 ) : UserDetailsService {
 
     @Transactional(readOnly = true)

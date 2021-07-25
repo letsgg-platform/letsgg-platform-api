@@ -5,7 +5,6 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 import javax.persistence.*
 
-
 @Entity
 class PasswordResetToken(
     @Column(unique = true, nullable = false)
@@ -15,7 +14,6 @@ class PasswordResetToken(
     @JoinColumn(name = "user_id")
     val user: LetsggUser
 ) : AbstractJpaPersistable<UUID>() {
-    
 
     /*
       Setting the id explicitly, so that hibernate could merge entities

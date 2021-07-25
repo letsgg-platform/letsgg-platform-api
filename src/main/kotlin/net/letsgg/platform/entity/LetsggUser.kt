@@ -1,8 +1,8 @@
 package net.letsgg.platform.entity
 
+import net.letsgg.platform.entity.type.AuthProvider
 import net.letsgg.platform.entity.type.Gender
 import net.letsgg.platform.security.AppUserRole
-import net.letsgg.platform.entity.type.AuthProvider
 import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
@@ -12,24 +12,25 @@ import javax.validation.constraints.Size
 
 @Entity
 @Table(
-    name = "letsgg_user", uniqueConstraints = [
+    name = "letsgg_user",
+    uniqueConstraints = [
         UniqueConstraint(columnNames = ["username", "email"])
     ]
 )
 class LetsggUser(
-        var name: String? = null,
-        @field:Size(min = 3, max = 12) var username: String,
-        @field:Email var email: String,
-        @Enumerated(EnumType.STRING)
+    var name: String? = null,
+    @field:Size(min = 3, max = 12) var username: String,
+    @field:Email var email: String,
+    @Enumerated(EnumType.STRING)
     var gender: Gender = Gender.UNDEFINED,
-        var passwordHash: String,
-        @Enumerated(EnumType.STRING)
+    var passwordHash: String,
+    @Enumerated(EnumType.STRING)
     var userRole: AppUserRole = AppUserRole.UNFINISHED_SETUP_USER,
-        @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     val authProvider: AuthProvider,
-        val authProviderId: String,
-        val hasFinishedSetup: Boolean = false,
-        val isEmailVerified: Boolean = false,
+    val authProviderId: String,
+    val hasFinishedSetup: Boolean = false,
+    val isEmailVerified: Boolean = false,
 ) : AbstractJpaPersistable<UUID>() {
 
     @field:Past
