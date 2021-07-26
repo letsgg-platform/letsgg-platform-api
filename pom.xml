@@ -12,7 +12,7 @@
     <artifactId>letsgg-platform-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>letsgg-platform-service</name>
-    <description>let'sGG Platform Core-Service</description>
+    <description>Let'sGG Platform Core-Service</description>
     <packaging>jar</packaging>
 
     <properties>

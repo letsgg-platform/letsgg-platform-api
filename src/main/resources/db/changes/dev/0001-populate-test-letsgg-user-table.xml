@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="romm1of" id="populate-test-letsgg-user-table" failOnError="true">
+        <sql>
+            INSERT INTO letsgg_user(id, name, username, email, gender_type, password_hash,
+                                                  auth_provider_type, finished_setup, email_verified, birthday_date,
+                                                  image_url, creation_timestamp, update_timestamp)
+            VALUES ('65ff2fcc-906a-4f8b-b1b8-1881b4a7395f', 'Joe Doe', 'joedoe21', 'joe.doe@test.com', 'MALE',
+                    '$2a$10$eC41s5oxHzwc1wzsbUMgs.Azyu2zWrV64IpC2ZrDHmQ6EDrrT0Wje', 'LOCAL', TRUE, TRUE, '1991-01-01',
+                    NULL, '2021-06-12', NULL),
+                   ('5859335f-7c5d-4809-a9ba-ffd3a6995747', 'Emily Phillips', 'emilyon721', 'emily.phillips@test.com',
+                    'FEMALE',
+                    '$2a$10$21/nP5l2fIwBmotuzBRAg.AV1ED15c1HCi8Rh7vP/HjjsQFDT0dYS', 'LOCAL', TRUE, TRUE, '1999-12-12',
+                    NULL, '2021-06-20', NULL),
+                   ('388f02cb-0440-4150-a043-66c119626e3b', NULL, 'illinoisboi', 'illinoisboi@test.com', 'UNDEFINED',
+                    '$2a$10$ZZp7uXBTQOqvrVw6M50G.e5qzIcBEXjAa6guJefvAGf8I8bU14M9u', 'GOOGLE', FALSE, FALSE, NULL,
+                    NULL, '2021-06-26', NULL)
+        </sql>
+        <rollback>
+            <sql>
+                TRUNCATE TABLE letsgg_user
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
