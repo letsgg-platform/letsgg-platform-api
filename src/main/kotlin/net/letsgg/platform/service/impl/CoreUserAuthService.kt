@@ -1,12 +1,13 @@
-package net.letsgg.platform.service.auth
+package net.letsgg.platform.service.impl
 
 import net.letsgg.platform.api.dto.LoginRequest
 import net.letsgg.platform.api.dto.OauthTokenInfoDto
 import net.letsgg.platform.api.dto.UserDto
-import net.letsgg.platform.api.mapper.LetsggUserMapper
+import net.letsgg.platform.api.mapper.UserDtoMapper
 import net.letsgg.platform.exception.EmailAlreadyInUseException
 import net.letsgg.platform.exception.InvalidLoginCredentialsException
 import net.letsgg.platform.security.jwt.AuthorizationTokenService
+import net.letsgg.platform.service.auth.UserAuthService
 import net.letsgg.platform.service.user.UserService
 import net.letsgg.platform.utility.EMAIL_ALREADY_USED
 import net.letsgg.platform.utility.INVALID_LOGIN_CREDENTIALS
@@ -23,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 class CoreUserAuthService(
     private val authenticationManager: AuthenticationManager,
     private val userService: UserService,
-    private val userMapper: LetsggUserMapper,
+    private val userDtoMapper: UserDtoMapper,
     private val authorizationTokenService: AuthorizationTokenService,
 ) : UserAuthService {
     private val logger by LoggerDelegate()
@@ -43,7 +44,7 @@ class CoreUserAuthService(
             logger.error(String.format(EMAIL_ALREADY_USED, userDto.email))
             throw EmailAlreadyInUseException(String.format(EMAIL_ALREADY_USED, userDto.email))
         }
-        userService.save(userMapper.convert(userDto))
+        userService.save(userDtoMapper.convert(userDto))
 
         val authentication = attemptAuthentication(
             LoginRequest(userDto.email, userDto.password!!)
