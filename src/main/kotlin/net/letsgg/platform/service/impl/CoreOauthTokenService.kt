@@ -1,7 +1,8 @@
-package net.letsgg.platform.service.oauth
+package net.letsgg.platform.service.impl
 
 import net.letsgg.platform.repository.OauthTokenRepository
 import net.letsgg.platform.security.oauth2.OauthTokenInfo
+import net.letsgg.platform.service.oauth.OauthTokenService
 import org.springframework.security.oauth2.core.OAuth2AuthorizationException
 import org.springframework.security.oauth2.core.OAuth2Error
 import org.springframework.stereotype.Service

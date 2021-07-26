@@ -1,5 +1,6 @@
-package net.letsgg.platform.service.email
+package net.letsgg.platform.service.impl
 
+import net.letsgg.platform.service.email.EmailSenderService
 import net.letsgg.platform.utility.LoggerDelegate
 import org.springframework.core.io.ClassPathResource
 import org.springframework.mail.SimpleMailMessage

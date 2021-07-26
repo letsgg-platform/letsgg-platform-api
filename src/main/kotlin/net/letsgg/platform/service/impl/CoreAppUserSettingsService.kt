@@ -1,9 +1,11 @@
-package net.letsgg.platform.service.user
+package net.letsgg.platform.service.impl
 
 import net.letsgg.platform.entity.LetsggUser
 import net.letsgg.platform.entity.PasswordResetToken
 import net.letsgg.platform.repository.PasswordResetTokenRepository
 import net.letsgg.platform.service.email.EmailSenderService
+import net.letsgg.platform.service.user.AppUserSettingsService
+import net.letsgg.platform.service.user.UserService
 import net.letsgg.platform.utility.LoggerDelegate
 import net.letsgg.platform.utility.PasswordResetTokenUtils
 import org.springframework.context.ApplicationContext

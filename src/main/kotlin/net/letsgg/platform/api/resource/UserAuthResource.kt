@@ -9,12 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import net.letsgg.platform.api.dto.LoginRequest
 import net.letsgg.platform.api.dto.OauthTokenInfoDto
 import net.letsgg.platform.api.dto.UserDto
-import net.letsgg.platform.api.mapper.LetsggUserMapper
+import net.letsgg.platform.api.mapper.UserDtoMapper
 import net.letsgg.platform.api.mapper.OauthTokenInfoMapper
 import net.letsgg.platform.api.view.Views
 import net.letsgg.platform.exception.InvalidResetPasswordTokenException
 import net.letsgg.platform.exception.handler.ApiError
-import net.letsgg.platform.service.auth.CoreUserAuthService
+import net.letsgg.platform.service.impl.CoreUserAuthService
 import net.letsgg.platform.service.auth.token.AppTokenService
 import net.letsgg.platform.service.oauth.OauthTokenService
 import net.letsgg.platform.service.user.AppUserSettingsService
@@ -37,7 +37,7 @@ import javax.validation.Valid
 class UserAuthResource(
     private val userSettingsService: AppUserSettingsService,
     private val userAuthService: CoreUserAuthService,
-    private val userMapper: LetsggUserMapper,
+    private val userDtoMapper: UserDtoMapper,
     private val tokenService: AppTokenService
 ) {
     private val logger by LoggerDelegate()
