@@ -8,10 +8,10 @@
         <sql>
             CREATE TABLE IF NOT EXISTS letsgg_user
                 (
-                    id VARCHAR(32)
+                    id VARCHAR(36)
                         PRIMARY KEY,
                     name VARCHAR(255),
-                    username VARCHAR(32)
+                    username VARCHAR(12)
                         UNIQUE NOT NULL,
                     email VARCHAR(255)
                         UNIQUE NOT NULL,
